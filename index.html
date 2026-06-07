@@ -10,33 +10,19 @@
 <link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,400;0,600;0,700;0,800;0,900&display=swap" rel="stylesheet">
 <style>
   :root{
-    --bg:#f6f3ec;
-    --ink:#2a2926;
-    --muted:#6f6a61;
-    --line:#e6e0d4;
-    --card:#ffffff;
-    --brand:#2f8f83;
-    --brand-dark:#236b62;
-    --brand-soft:#e3f0ed;
-    --accent:#e0975a;
-    --danger:#c0533f;
-    --ok:#2f8f83;
-    --radius:20px;
+    --bg:#f6f3ec; --ink:#2a2926; --muted:#6f6a61; --line:#e6e0d4; --card:#ffffff;
+    --brand:#2f8f83; --brand-dark:#236b62; --brand-soft:#e3f0ed; --accent:#e0975a;
+    --danger:#c0533f; --ok:#2f8f83; --radius:20px;
     --shadow:0 10px 30px rgba(35,107,98,.10), 0 2px 8px rgba(0,0,0,.04);
   }
   *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
   html,body{margin:0;padding:0;}
   body{
-    font-family:"Nunito",system-ui,sans-serif;
-    color:var(--ink);
-    background:var(--bg);
+    font-family:"Nunito",system-ui,sans-serif; color:var(--ink); background:var(--bg);
     background-image:
       radial-gradient(120% 80% at 85% -10%, #e7f1ee 0%, rgba(231,241,238,0) 55%),
       radial-gradient(100% 70% at -10% 110%, #f4e7d8 0%, rgba(244,231,216,0) 55%);
-    background-attachment:fixed;
-    min-height:100dvh;
-    line-height:1.45;
-    -webkit-font-smoothing:antialiased;
+    background-attachment:fixed; min-height:100dvh; line-height:1.45; -webkit-font-smoothing:antialiased;
   }
   .wrap{
     max-width:460px;margin:0 auto;
@@ -45,71 +31,70 @@
   }
   .topbar{display:flex;align-items:center;justify-content:space-between;padding:6px 2px 18px;}
   .lang{display:flex;gap:4px;background:#fff;border:1px solid var(--line);border-radius:999px;padding:3px;}
-  .lang button{
-    border:0;background:transparent;font-family:inherit;font-weight:700;font-size:13px;
-    color:var(--muted);padding:6px 12px;border-radius:999px;cursor:pointer;
-  }
+  .lang button{border:0;background:transparent;font-family:inherit;font-weight:700;font-size:13px;color:var(--muted);padding:6px 12px;border-radius:999px;cursor:pointer;}
   .lang button[aria-pressed="true"]{background:var(--brand);color:#fff;}
-
   .brand{display:flex;align-items:center;gap:11px;}
   .mark{width:42px;height:42px;flex:0 0 42px;}
   .brand-name{font-weight:900;font-size:17px;letter-spacing:-.2px;line-height:1.1;}
   .brand-name small{display:block;font-weight:700;font-size:11px;color:var(--brand-dark);letter-spacing:.4px;text-transform:uppercase;}
-
   .hero{padding:8px 2px 22px;animation:rise .5s ease both;}
   .hero h1{font-size:26px;line-height:1.18;margin:0 0 8px;letter-spacing:-.5px;}
   .hero p{margin:0;color:var(--muted);font-size:15px;font-weight:600;}
-
-  .card{
-    background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
-    box-shadow:var(--shadow);padding:18px 16px 20px;animation:rise .5s .06s ease both;
-  }
+  .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:18px 16px 20px;animation:rise .5s .06s ease both;}
   .tabs{display:flex;gap:6px;background:var(--bg);border-radius:14px;padding:5px;margin-bottom:16px;}
-  .tabs button{
-    flex:1;border:0;background:transparent;font-family:inherit;font-weight:800;font-size:14px;
-    color:var(--muted);padding:11px 8px;border-radius:10px;cursor:pointer;transition:.18s;
-  }
+  .tabs button{flex:1;border:0;background:transparent;font-family:inherit;font-weight:800;font-size:14px;color:var(--muted);padding:11px 8px;border-radius:10px;cursor:pointer;transition:.18s;}
   .tabs button[aria-selected="true"]{background:#fff;color:var(--brand-dark);box-shadow:0 1px 4px rgba(0,0,0,.06);}
-
   .seg{display:flex;gap:18px;margin:0 2px 14px;}
   .seg label{display:flex;align-items:center;gap:7px;font-weight:700;font-size:14px;color:var(--muted);cursor:pointer;}
   .seg input{accent-color:var(--brand);width:18px;height:18px;}
   .seg input:checked + span{color:var(--ink);}
-
   label.field{display:block;margin-bottom:13px;}
   label.field > span{display:block;font-weight:700;font-size:13px;margin:0 2px 6px;color:var(--ink);}
-  input[type=text],input[type=email],input[type=password],input[type=tel]{
+  input[type=text],input[type=email],input[type=password],input[type=tel],input[type=date],select{
     width:100%;font-family:inherit;font-size:16px;font-weight:600;color:var(--ink);
     padding:13px 14px;border:1.5px solid var(--line);border-radius:13px;background:#fff;transition:.15s;
   }
-  input:focus{outline:0;border-color:var(--brand);box-shadow:0 0 0 4px var(--brand-soft);}
+  input:focus,select:focus{outline:0;border-color:var(--brand);box-shadow:0 0 0 4px var(--brand-soft);}
   .hidden{display:none !important;}
-
-  .btn{
-    width:100%;border:0;font-family:inherit;font-weight:800;font-size:16px;color:#fff;
-    background:var(--brand);padding:15px;border-radius:14px;cursor:pointer;margin-top:4px;
-    transition:transform .08s ease, background .15s ease;
-  }
+  .btn{width:100%;border:0;font-family:inherit;font-weight:800;font-size:16px;color:#fff;background:var(--brand);padding:15px;border-radius:14px;cursor:pointer;margin-top:4px;transition:transform .08s ease, background .15s ease;}
   .btn:active{transform:scale(.985);}
   .btn:disabled{opacity:.55;cursor:default;}
   .btn.secondary{background:#fff;color:var(--brand-dark);border:1.5px solid var(--line);}
-
   .msg{margin:14px 2px 0;font-size:14px;font-weight:700;border-radius:12px;padding:11px 13px;display:none;}
   .msg.show{display:block;animation:rise .25s ease both;}
   .msg.err{background:#faeae6;color:var(--danger);}
   .msg.ok{background:var(--brand-soft);color:var(--brand-dark);}
-
-  .welcome{text-align:center;padding:8px 4px 4px;}
-  .welcome .avatar{width:64px;height:64px;margin:0 auto 14px;border-radius:50%;background:var(--brand-soft);display:flex;align-items:center;justify-content:center;}
-  .welcome h2{margin:0 0 6px;font-size:22px;}
-  .badge{display:inline-block;background:var(--brand-soft);color:var(--brand-dark);font-weight:800;font-size:13px;padding:5px 12px;border-radius:999px;margin-bottom:16px;}
-  .welcome .note{color:var(--muted);font-weight:600;font-size:14px;margin:0 0 18px;}
-
-  .foot{margin-top:auto;padding-top:26px;text-align:center;color:var(--muted);font-size:12.5px;font-weight:600;}
-  .foot a{color:var(--brand-dark);text-decoration:none;font-weight:800;}
-  .foot .org{display:block;margin-top:4px;}
-
+  .welcome{text-align:center;padding:6px 4px 2px;}
+  .welcome .avatar{width:58px;height:58px;margin:0 auto 12px;border-radius:50%;background:var(--brand-soft);display:flex;align-items:center;justify-content:center;}
+  .welcome h2{margin:0 0 6px;font-size:21px;}
+  .badge{display:inline-block;background:var(--brand-soft);color:var(--brand-dark);font-weight:800;font-size:13px;padding:5px 12px;border-radius:999px;}
+  /* Dashboard */
+  .dash{margin-top:20px;border-top:1px solid var(--line);padding-top:16px;}
+  .dash-head{display:flex;align-items:center;justify-content:space-between;margin:0 2px 12px;}
+  .dash-head h3{margin:0;font-size:16px;font-weight:800;}
+  .btn-add{border:0;background:var(--brand-soft);color:var(--brand-dark);font-family:inherit;font-weight:800;font-size:13px;padding:8px 13px;border-radius:999px;cursor:pointer;}
+  .btn-add:active{transform:scale(.97);}
+  .child-list{display:flex;flex-direction:column;gap:10px;}
+  .child-item{display:flex;align-items:center;gap:12px;background:var(--bg);border:1px solid var(--line);border-radius:14px;padding:13px 14px;}
+  .child-item .ci-ava{width:40px;height:40px;flex:0 0 40px;border-radius:12px;background:var(--brand-soft);display:flex;align-items:center;justify-content:center;font-weight:900;color:var(--brand-dark);}
+  .child-item .ci-info{min-width:0;}
+  .child-item .ci-name{font-weight:800;font-size:15px;line-height:1.2;}
+  .child-item .ci-sub{font-size:12.5px;color:var(--muted);font-weight:600;margin-top:2px;}
+  .empty{color:var(--muted);font-weight:600;font-size:14px;text-align:center;padding:14px 6px;}
+  .welcome .logout-wrap{margin-top:18px;}
+  /* Modal */
+  .modal{position:fixed;inset:0;z-index:1000;background:rgba(35,42,40,.45);display:flex;align-items:flex-end;justify-content:center;padding:0;animation:fade .2s ease both;}
+  .sheet{width:100%;max-width:460px;background:#fff;border-radius:22px 22px 0 0;padding:20px 18px calc(20px + env(safe-area-inset-bottom));max-height:92dvh;overflow-y:auto;animation:slideup .28s cubic-bezier(.2,.8,.2,1) both;}
+  .sheet h3{margin:0 0 14px;font-size:19px;}
+  .consent{background:var(--brand-soft);border-radius:14px;padding:14px;margin-bottom:16px;}
+  .consent p{margin:0 0 12px;font-size:13.5px;font-weight:600;color:var(--brand-dark);line-height:1.5;}
+  .check{display:flex;align-items:flex-start;gap:9px;font-weight:800;font-size:14px;color:var(--ink);cursor:pointer;}
+  .check input{accent-color:var(--brand);width:20px;height:20px;flex:0 0 20px;margin-top:1px;}
+  .modal-actions{display:flex;gap:10px;margin-top:6px;}
+  .modal-actions .btn{margin-top:0;}
   @keyframes rise{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:none;}}
+  @keyframes fade{from{opacity:0;}to{opacity:1;}}
+  @keyframes slideup{from{transform:translateY(100%);}to{transform:none;}}
   @media (prefers-reduced-motion:reduce){*{animation:none !important;}}
 </style>
 </head>
@@ -144,8 +129,6 @@
       <button id="tabEmail" role="tab" aria-selected="true" data-i18n="tabEmail">E-poçt</button>
       <button id="tabPhone" role="tab" aria-selected="false" data-i18n="tabPhone">Telefon</button>
     </div>
-
-    <!-- E-poçt paneli -->
     <div id="panelEmail">
       <div class="seg">
         <label><input type="radio" name="emode" value="login" checked><span data-i18n="login">Giriş</span></label>
@@ -165,15 +148,12 @@
       </label>
       <button class="btn" id="emailSubmit" data-i18n="login">Giriş</button>
     </div>
-
-    <!-- Telefon paneli -->
     <div id="panelPhone" class="hidden">
       <label class="field">
         <span data-i18n="phone">Telefon nömrəsi</span>
         <input type="tel" id="phone" inputmode="tel" placeholder="+994 50 123 45 67" autocomplete="tel" />
       </label>
       <button class="btn" id="sendCode" data-i18n="sendCode">Kod göndər</button>
-
       <div id="codeStep" class="hidden">
         <label class="field" style="margin-top:13px;">
           <span data-i18n="smsCode">SMS kodu</span>
@@ -182,20 +162,30 @@
         <button class="btn" id="confirmCode" data-i18n="confirm">Təsdiqlə</button>
       </div>
     </div>
-
     <div class="msg" id="msg" role="status" aria-live="polite"></div>
     <div id="recaptcha-container"></div>
   </div>
 
-  <!-- DAXİL OLDUQDAN SONRA -->
+  <!-- PANEL -->
   <div class="card hidden" id="loggedCard">
     <div class="welcome">
       <div class="avatar">
-        <svg width="30" height="30" viewBox="0 0 24 24" fill="none"><path d="M5 20c0-3.3 3.1-5 7-5s7 1.7 7 5" stroke="#2f8f83" stroke-width="2" stroke-linecap="round"/><circle cx="12" cy="8" r="4" stroke="#2f8f83" stroke-width="2"/></svg>
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none"><path d="M5 20c0-3.3 3.1-5 7-5s7 1.7 7 5" stroke="#2f8f83" stroke-width="2" stroke-linecap="round"/><circle cx="12" cy="8" r="4" stroke="#2f8f83" stroke-width="2"/></svg>
       </div>
       <h2><span data-i18n="welcome">Xoş gəldiniz</span><span id="who"></span></h2>
       <div class="badge"><span data-i18n="role">Rol</span>: <span id="role">—</span></div>
-      <p class="note" data-i18n="dashSoon">Panel növbəti addımda hazırlanır.</p>
+    </div>
+
+    <div class="dash">
+      <div class="dash-head">
+        <h3 data-i18n="myChildren">Övladlarım</h3>
+        <button class="btn-add" id="addChild" data-i18n="addChild">+ Uşaq əlavə et</button>
+      </div>
+      <div id="childList" class="child-list"></div>
+      <div id="childEmpty" class="empty" data-i18n="noChildren">Hələ uşaq əlavə etməmisiniz.</div>
+    </div>
+
+    <div class="logout-wrap">
       <button class="btn secondary" id="logout" data-i18n="logout">Çıxış</button>
     </div>
   </div>
@@ -204,7 +194,38 @@
     <span data-i18n="madeBy">Hazırladı</span> <a href="https://instagram.com/s_akhundoff" target="_blank" rel="noopener">@s_akhundoff</a>
     <span class="org">AN Psixoloji Dəstək və Reabilitasiya Mərkəzi</span>
   </div>
+</div>
 
+<!-- Uşaq əlavə et modalı -->
+<div class="modal hidden" id="childModal">
+  <div class="sheet">
+    <h3 data-i18n="newChild">Yeni uşaq-kartı</h3>
+    <div class="consent">
+      <p data-i18n="consentText">Bu məlumatlar yalnız övladınızın inkişafını izləmək üçündür. Təhlükəsiz saxlanılır və yalnız siz, təyin olunmuş terapevt və mərkəz admini görə bilər. Razılığı istənilən vaxt geri götürə bilərsiniz.</p>
+      <label class="check"><input type="checkbox" id="consentChk"><span data-i18n="consentAgree">Razılıq verirəm</span></label>
+    </div>
+    <label class="field">
+      <span data-i18n="childName">Uşağın adı</span>
+      <input type="text" id="cName" autocomplete="off" />
+    </label>
+    <label class="field">
+      <span data-i18n="birthDate">Doğum tarixi</span>
+      <input type="date" id="cBirth" />
+    </label>
+    <label class="field">
+      <span data-i18n="gender">Cins</span>
+      <select id="cGender">
+        <option value="" data-i18n="genderPick">Seçin</option>
+        <option value="oglan" data-i18n="boy">Oğlan</option>
+        <option value="qiz" data-i18n="girl">Qız</option>
+      </select>
+    </label>
+    <div class="msg" id="modalMsg" role="status" aria-live="polite"></div>
+    <div class="modal-actions">
+      <button class="btn secondary" id="cCancel" data-i18n="cancel">Ləğv et</button>
+      <button class="btn" id="cSave" data-i18n="create">Yarat</button>
+    </div>
+  </div>
 </div>
 
 <script type="module">
@@ -213,18 +234,23 @@ import {
   setupRecaptcha, sendPhoneCode, confirmPhoneCode,
   logout, onUser
 } from "./auth.js";
+import { createChild, listMyChildren } from "./children.js";
 
-// ── Dil (AZ / RU) ────────────────────────────────────────────────
 const I18N = {
   az:{
     heroTitle:"Erkən müdaxilə fərq yaradır", heroSub:"Xüsusi qayğıya ehtiyacı olan uşaqlar üçün dəstək platforması.",
     tabEmail:"E-poçt", tabPhone:"Telefon", login:"Giriş", register:"Qeydiyyat",
     name:"Ad, Soyad", email:"E-poçt", password:"Parol", phone:"Telefon nömrəsi",
     sendCode:"Kod göndər", smsCode:"SMS kodu", confirm:"Təsdiqlə",
-    welcome:"Xoş gəldiniz", role:"Rol", dashSoon:"Panel növbəti addımda hazırlanır.",
-    logout:"Çıxış", madeBy:"Hazırladı",
+    welcome:"Xoş gəldiniz", role:"Rol", logout:"Çıxış", madeBy:"Hazırladı",
     rolValideyn:"Valideyn", rolTerapevt:"Terapevt", rolAdmin:"Admin",
-    eFill:"E-poçt və parolu doldurun.", ePhone:"Düzgün nömrə daxil edin (+994…).",
+    myChildren:"Övladlarım", addChild:"+ Uşaq əlavə et", noChildren:"Hələ uşaq əlavə etməmisiniz.",
+    newChild:"Yeni uşaq-kartı",
+    consentText:"Bu məlumatlar yalnız övladınızın inkişafını izləmək üçündür. Təhlükəsiz saxlanılır və yalnız siz, təyin olunmuş terapevt və mərkəz admini görə bilər. Razılığı istənilən vaxt geri götürə bilərsiniz.",
+    consentAgree:"Razılıq verirəm", childName:"Uşağın adı", birthDate:"Doğum tarixi",
+    gender:"Cins", genderPick:"Seçin", boy:"Oğlan", girl:"Qız", cancel:"Ləğv et", create:"Yarat",
+    needConsent:"Davam etmək üçün razılıq verin.", needName:"Uşağın adını yazın.",
+    creating:"Yaradılır…", eFill:"E-poçt və parolu doldurun.", ePhone:"Düzgün nömrə daxil edin (+994…).",
     eCode:"Kodu daxil edin.", working:"Gözləyin…", codeSent:"Kod göndərildi.",
     eGeneric:"Xəta baş verdi. Yenidən cəhd edin."
   },
@@ -233,119 +259,155 @@ const I18N = {
     tabEmail:"Эл. почта", tabPhone:"Телефон", login:"Вход", register:"Регистрация",
     name:"Имя, Фамилия", email:"Эл. почта", password:"Пароль", phone:"Номер телефона",
     sendCode:"Отправить код", smsCode:"SMS-код", confirm:"Подтвердить",
-    welcome:"Добро пожаловать", role:"Роль", dashSoon:"Панель готовится на следующем шаге.",
-    logout:"Выход", madeBy:"Автор",
+    welcome:"Добро пожаловать", role:"Роль", logout:"Выход", madeBy:"Автор",
     rolValideyn:"Родитель", rolTerapevt:"Терапевт", rolAdmin:"Администратор",
-    eFill:"Заполните почту и пароль.", ePhone:"Введите корректный номер (+994…).",
+    myChildren:"Мои дети", addChild:"+ Добавить", noChildren:"Вы ещё не добавили ребёнка.",
+    newChild:"Новая карта ребёнка",
+    consentText:"Эти данные используются только для отслеживания развития вашего ребёнка. Хранятся безопасно и доступны только вам, назначенному терапевту и администратору центра. Согласие можно отозвать в любое время.",
+    consentAgree:"Я даю согласие", childName:"Имя ребёнка", birthDate:"Дата рождения",
+    gender:"Пол", genderPick:"Выберите", boy:"Мальчик", girl:"Девочка", cancel:"Отмена", create:"Создать",
+    needConsent:"Дайте согласие, чтобы продолжить.", needName:"Введите имя ребёнка.",
+    creating:"Создаётся…", eFill:"Заполните почту и пароль.", ePhone:"Введите корректный номер (+994…).",
     eCode:"Введите код.", working:"Подождите…", codeSent:"Код отправлен.",
     eGeneric:"Произошла ошибка. Попробуйте снова."
   }
 };
-let lang = "az";
+let lang="az";
 const t = k => (I18N[lang][k] ?? k);
 function applyLang(){
-  document.documentElement.lang = lang;
-  document.querySelectorAll("[data-i18n]").forEach(el=>{ el.textContent = t(el.dataset.i18n); });
+  document.documentElement.lang=lang;
+  document.querySelectorAll("[data-i18n]").forEach(el=>{ el.textContent=t(el.dataset.i18n); });
   syncEmailButton();
   document.querySelectorAll(".lang button").forEach(b=>b.setAttribute("aria-pressed", String(b.dataset.lang===lang)));
 }
-document.querySelectorAll(".lang button").forEach(b=>{
-  b.addEventListener("click", ()=>{ lang=b.dataset.lang; applyLang(); });
-});
+document.querySelectorAll(".lang button").forEach(b=>b.addEventListener("click", ()=>{lang=b.dataset.lang;applyLang();}));
 
-// ── Mesaj köməkçisi ──────────────────────────────────────────────
-const msgEl = document.getElementById("msg");
-function show(kind, text){ msgEl.className = "msg show "+kind; msgEl.textContent = text; }
-function clearMsg(){ msgEl.className = "msg"; msgEl.textContent=""; }
+const msgEl=document.getElementById("msg");
+function show(k,x){msgEl.className="msg show "+k;msgEl.textContent=x;}
+function clearMsg(){msgEl.className="msg";msgEl.textContent="";}
 
-// ── Tab: E-poçt / Telefon ────────────────────────────────────────
 const tabEmail=document.getElementById("tabEmail"), tabPhone=document.getElementById("tabPhone");
 const panelEmail=document.getElementById("panelEmail"), panelPhone=document.getElementById("panelPhone");
-function selectTab(which){
-  const isEmail = which==="email";
-  tabEmail.setAttribute("aria-selected", String(isEmail));
-  tabPhone.setAttribute("aria-selected", String(!isEmail));
-  panelEmail.classList.toggle("hidden", !isEmail);
-  panelPhone.classList.toggle("hidden", isEmail);
-  clearMsg();
-}
-tabEmail.onclick=()=>selectTab("email");
-tabPhone.onclick=()=>selectTab("phone");
+function selectTab(w){const e=w==="email";tabEmail.setAttribute("aria-selected",String(e));tabPhone.setAttribute("aria-selected",String(!e));panelEmail.classList.toggle("hidden",!e);panelPhone.classList.toggle("hidden",e);clearMsg();}
+tabEmail.onclick=()=>selectTab("email"); tabPhone.onclick=()=>selectTab("phone");
 
-// ── E-poçt: Giriş / Qeydiyyat ────────────────────────────────────
-const nameField=document.getElementById("nameField");
-const emailBtn=document.getElementById("emailSubmit");
-function currentEmode(){ return document.querySelector('input[name="emode"]:checked').value; }
+const nameField=document.getElementById("nameField"), emailBtn=document.getElementById("emailSubmit");
+function currentEmode(){return document.querySelector('input[name="emode"]:checked').value;}
 function syncEmailButton(){
-  const reg = currentEmode()==="register";
-  nameField.classList.toggle("hidden", !reg);
-  emailBtn.textContent = reg ? t("register") : t("login");
-  document.getElementById("password").setAttribute("autocomplete", reg?"new-password":"current-password");
+  const reg=currentEmode()==="register";
+  nameField.classList.toggle("hidden",!reg);
+  emailBtn.textContent=reg?t("register"):t("login");
+  document.getElementById("password").setAttribute("autocomplete",reg?"new-password":"current-password");
 }
-document.querySelectorAll('input[name="emode"]').forEach(r=>r.addEventListener("change", ()=>{clearMsg();syncEmailButton();}));
+document.querySelectorAll('input[name="emode"]').forEach(r=>r.addEventListener("change",()=>{clearMsg();syncEmailButton();}));
 
 emailBtn.addEventListener("click", async ()=>{
   const email=document.getElementById("email").value.trim();
   const pass=document.getElementById("password").value;
   const ad=document.getElementById("name").value.trim();
-  if(!email || !pass){ return show("err", t("eFill")); }
-  emailBtn.disabled=true; show("ok", t("working"));
+  if(!email||!pass) return show("err",t("eFill"));
+  emailBtn.disabled=true; show("ok",t("working"));
   try{
-    if(currentEmode()==="register") await registerWithEmail(email, pass, ad);
-    else await loginWithEmail(email, pass);
+    if(currentEmode()==="register") await registerWithEmail(email,pass,ad);
+    else await loginWithEmail(email,pass);
     clearMsg();
-  }catch(e){ show("err", e?.message || t("eGeneric")); }
+  }catch(e){ show("err", e?.message||t("eGeneric")); }
   finally{ emailBtn.disabled=false; }
 });
 
-// ── Telefon (SMS) ────────────────────────────────────────────────
 let verifier=null, confirmation=null;
-const sendBtn=document.getElementById("sendCode");
-const codeStep=document.getElementById("codeStep");
-const confirmBtn=document.getElementById("confirmCode");
-
+const sendBtn=document.getElementById("sendCode"), codeStep=document.getElementById("codeStep"), confirmBtn=document.getElementById("confirmCode");
 sendBtn.addEventListener("click", async ()=>{
   const phone=document.getElementById("phone").value.replace(/\s+/g,"");
-  if(!/^\+\d{9,15}$/.test(phone)){ return show("err", t("ePhone")); }
-  sendBtn.disabled=true; show("ok", t("working"));
+  if(!/^\+\d{9,15}$/.test(phone)) return show("err",t("ePhone"));
+  sendBtn.disabled=true; show("ok",t("working"));
   try{
-    if(!verifier) verifier = setupRecaptcha("recaptcha-container");
-    confirmation = await sendPhoneCode(phone, verifier);
-    codeStep.classList.remove("hidden");
-    show("ok", t("codeSent"));
-  }catch(e){ show("err", e?.message || t("eGeneric")); }
+    if(!verifier) verifier=setupRecaptcha("recaptcha-container");
+    confirmation=await sendPhoneCode(phone,verifier);
+    codeStep.classList.remove("hidden"); show("ok",t("codeSent"));
+  }catch(e){ show("err", e?.message||t("eGeneric")); }
   finally{ sendBtn.disabled=false; }
 });
-
 confirmBtn.addEventListener("click", async ()=>{
   const code=document.getElementById("smsCode").value.trim();
-  if(!code){ return show("err", t("eCode")); }
-  confirmBtn.disabled=true; show("ok", t("working"));
-  try{
-    await confirmPhoneCode(confirmation, code);
-    clearMsg();
-  }catch(e){ show("err", e?.message || t("eGeneric")); }
+  if(!code) return show("err",t("eCode"));
+  confirmBtn.disabled=true; show("ok",t("working"));
+  try{ await confirmPhoneCode(confirmation,code); clearMsg(); }
+  catch(e){ show("err", e?.message||t("eGeneric")); }
   finally{ confirmBtn.disabled=false; }
 });
 
-// ── Auth vəziyyəti ───────────────────────────────────────────────
-const authCard=document.getElementById("authCard");
-const loggedCard=document.getElementById("loggedCard");
-const rolMap={valideyn:"rolValideyn", terapevt:"rolTerapevt", admin:"rolAdmin"};
+// ── Panel & uşaq-kartı ───────────────────────────────────────────
+const authCard=document.getElementById("authCard"), loggedCard=document.getElementById("loggedCard");
+const childList=document.getElementById("childList"), childEmpty=document.getElementById("childEmpty");
+const addChildBtn=document.getElementById("addChild");
+const rolMap={valideyn:"rolValideyn",terapevt:"rolTerapevt",admin:"rolAdmin"};
+let currentUid=null, currentRol=null;
+
+function fmtDate(d){ if(!d) return ""; try{ return new Date(d).toLocaleDateString(lang==="ru"?"ru-RU":"az-AZ"); }catch{ return d; } }
+
+function renderChildren(list){
+  childList.innerHTML="";
+  if(!list.length){ childEmpty.classList.remove("hidden"); return; }
+  childEmpty.classList.add("hidden");
+  list.forEach(c=>{
+    const ad=c.profil?.ad||"—";
+    const sub=fmtDate(c.profil?.dogumTarixi);
+    const item=document.createElement("div");
+    item.className="child-item";
+    item.innerHTML=`<div class="ci-ava">${(ad[0]||"?").toUpperCase()}</div>
+      <div class="ci-info"><div class="ci-name"></div><div class="ci-sub"></div></div>`;
+    item.querySelector(".ci-name").textContent=ad;
+    item.querySelector(".ci-sub").textContent=sub;
+    childList.appendChild(item);
+  });
+}
+
+async function loadChildren(){
+  try{ renderChildren(await listMyChildren(currentUid)); }
+  catch(e){ console.error(e); }
+}
+
+// Modal
+const modal=document.getElementById("childModal"), modalMsg=document.getElementById("modalMsg");
+const cName=document.getElementById("cName"), cBirth=document.getElementById("cBirth"),
+      cGender=document.getElementById("cGender"), consentChk=document.getElementById("consentChk"),
+      cSave=document.getElementById("cSave"), cCancel=document.getElementById("cCancel");
+function openModal(){ cName.value="";cBirth.value="";cGender.value="";consentChk.checked=false;modalMsg.className="msg";modalMsg.textContent="";modal.classList.remove("hidden"); }
+function closeModal(){ modal.classList.add("hidden"); }
+addChildBtn.addEventListener("click", openModal);
+cCancel.addEventListener("click", closeModal);
+modal.addEventListener("click", e=>{ if(e.target===modal) closeModal(); });
+
+cSave.addEventListener("click", async ()=>{
+  if(!consentChk.checked){ modalMsg.className="msg show err"; modalMsg.textContent=t("needConsent"); return; }
+  if(!cName.value.trim()){ modalMsg.className="msg show err"; modalMsg.textContent=t("needName"); return; }
+  cSave.disabled=true; modalMsg.className="msg show ok"; modalMsg.textContent=t("creating");
+  try{
+    await createChild({
+      profil:{ ad:cName.value.trim(), dogumTarixi:cBirth.value||"", cins:cGender.value||"" },
+      raziliq:{ verildi:true, tarix:Date.now() },
+      valideynUid:currentUid
+    });
+    closeModal(); await loadChildren();
+  }catch(e){ modalMsg.className="msg show err"; modalMsg.textContent=e?.message||t("eGeneric"); }
+  finally{ cSave.disabled=false; }
+});
 
 onUser((user, rol)=>{
   if(user){
-    authCard.classList.add("hidden");
-    loggedCard.classList.remove("hidden");
-    const ad = user.displayName || user.email || user.phoneNumber || "";
-    document.getElementById("who").textContent = ad ? ", "+ad.split("@")[0] : "";
-    document.getElementById("role").textContent = t(rolMap[rol] || "rolValideyn");
+    currentUid=user.uid; currentRol=rol||"valideyn";
+    authCard.classList.add("hidden"); loggedCard.classList.remove("hidden");
+    const ad=user.displayName||user.email||user.phoneNumber||"";
+    document.getElementById("who").textContent=ad?", "+ad.split("@")[0]:"";
+    document.getElementById("role").textContent=t(rolMap[currentRol]||"rolValideyn");
+    addChildBtn.classList.toggle("hidden", currentRol==="terapevt"); // terapevt kart yaratmır
+    loadChildren();
   }else{
-    loggedCard.classList.add("hidden");
-    authCard.classList.remove("hidden");
+    currentUid=null; currentRol=null;
+    loggedCard.classList.add("hidden"); authCard.classList.remove("hidden");
   }
 });
-
 document.getElementById("logout").addEventListener("click", ()=>logout());
 
 applyLang();
