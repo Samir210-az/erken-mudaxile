@@ -1,0 +1,51 @@
+{
+  "rules": {
+    ".read": false,
+    ".write": false,
+
+    "users": {
+      "$uid": {
+        ".read": "auth != null && (auth.uid === $uid || auth.token.email === 'samir.akhundoff@gmail.com' || root.child('users').child(auth.uid).child('rol').val() === 'admin')",
+        ".write": "auth != null && (auth.uid === $uid || auth.token.email === 'samir.akhundoff@gmail.com' || root.child('users').child(auth.uid).child('rol').val() === 'admin')",
+
+        "rol": {
+          ".validate": "newData.isString() && (newData.val() === 'valideyn' || newData.val() === 'terapevt' || newData.val() === 'admin') && ( (!data.exists() && newData.val() === 'valideyn') || (data.exists() && (auth.token.email === 'samir.akhundoff@gmail.com' || root.child('users').child(auth.uid).child('rol').val() === 'admin' || newData.val() === data.val())) )"
+        },
+        "tier": {
+          ".validate": "newData.val() === 'pulsuz' || newData.val() === 'premium'"
+        }
+      }
+    },
+
+    "children": {
+      "$childId": {
+        ".read": "auth != null && ( auth.token.email === 'samir.akhundoff@gmail.com' || root.child('users').child(auth.uid).child('rol').val() === 'admin' || data.child('parentIds').child(auth.uid).exists() || data.child('therapistIds').child(auth.uid).exists() )",
+        ".write": "auth != null && ( auth.token.email === 'samir.akhundoff@gmail.com' || root.child('users').child(auth.uid).child('rol').val() === 'admin' || data.child('therapistIds').child(auth.uid).exists() || data.child('parentIds').child(auth.uid).exists() || ( !data.exists() && newData.child('parentIds').child(auth.uid).exists() ) )",
+        ".validate": "newData.hasChildren(['profil', 'raziliq'])",
+
+        "raziliq": {
+          ".validate": "newData.child('verildi').isBoolean()"
+        }
+      }
+    },
+
+    "userChildren": {
+      "$uid": {
+        ".read": "auth != null && (auth.uid === $uid || auth.token.email === 'samir.akhundoff@gmail.com' || root.child('users').child(auth.uid).child('rol').val() === 'admin')",
+        "$childId": {
+          ".write": "auth != null && ( auth.uid === $uid || auth.token.email === 'samir.akhundoff@gmail.com' || root.child('users').child(auth.uid).child('rol').val() === 'admin' || root.child('children').child($childId).child('therapistIds').child(auth.uid).exists() )",
+          ".validate": "newData.isBoolean()"
+        }
+      }
+    },
+
+    "seanslar": {
+      ".indexOn": ["childId"],
+      "$seansId": {
+        ".read": "auth != null && ( auth.token.email === 'samir.akhundoff@gmail.com' || root.child('users').child(auth.uid).child('rol').val() === 'admin' || root.child('children').child(data.child('childId').val()).child('parentIds').child(auth.uid).exists() || root.child('children').child(data.child('childId').val()).child('therapistIds').child(auth.uid).exists() )",
+        ".write": "auth != null && ( auth.token.email === 'samir.akhundoff@gmail.com' || root.child('users').child(auth.uid).child('rol').val() === 'admin' || root.child('children').child(newData.child('childId').val()).child('therapistIds').child(auth.uid).exists() )",
+        ".validate": "newData.hasChild('childId')"
+      }
+    }
+  }
+}
