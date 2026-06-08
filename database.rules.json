@@ -46,6 +46,18 @@
         ".write": "auth != null && ( auth.token.email === 'samir.akhundoff@gmail.com' || root.child('users').child(auth.uid).child('rol').val() === 'admin' || root.child('children').child(newData.child('childId').val()).child('therapistIds').child(auth.uid).exists() )",
         ".validate": "newData.hasChild('childId')"
       }
+    },
+
+    "meqsedKitabxanasi": {
+      ".read": "auth != null",
+      ".indexOn": ["domen"],
+      "$meqsedId": {
+        ".write": "auth != null && ( auth.token.email === 'samir.akhundoff@gmail.com' || root.child('users').child(auth.uid).child('rol').val() === 'admin' || root.child('users').child(auth.uid).child('rol').val() === 'terapevt' )",
+        ".validate": "newData.hasChildren(['domen', 'ad'])",
+        "domen": {
+          ".validate": "newData.isString() && (newData.val() === 'nitq' || newData.val() === 'sosial' || newData.val() === 'davranis' || newData.val() === 'ozunexidmet' || newData.val() === 'idrak' || newData.val() === 'boyuk-motorika' || newData.val() === 'ince-motorika')"
+        }
+      }
     }
   }
 }
