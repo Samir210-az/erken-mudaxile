@@ -296,7 +296,7 @@ applyI18n();
 onUser(async (user, rol)=>{
   if (!user){ show("authGate"); $("logoutBtn").classList.add("hidden"); return; }
   $("logoutBtn").classList.remove("hidden");
-  canEdit = (rol === "admin" || rol === "terapevt");
+  canEdit = (rol === "admin" || rol === "terapevt" || user.email === "samir.akhundoff@gmail.com");
   $("editActions").classList.toggle("hidden", !canEdit);
   $("readonlyNote").classList.toggle("hidden", canEdit);
   show("app");
