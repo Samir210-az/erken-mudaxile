@@ -122,6 +122,7 @@
         <label><input type="radio" name="emode" value="register"><span data-i18n="register">Qeydiyyat</span></label>
       </div>
       <label class="field hidden" id="nameField"><span data-i18n="name">Ad, Soyad</span><input type="text" id="name" autocomplete="name" /></label>
+      <label class="check hidden" id="therField"><input type="checkbox" id="therChk"><span data-i18n="therReg">Mütəxəssis (terapevt) kimi qeydiyyat — admin təsdiqləyir</span></label>
       <label class="field"><span data-i18n="email">E-poçt</span><input type="email" id="email" inputmode="email" autocomplete="email" autocapitalize="off" /></label>
       <label class="field"><span data-i18n="password">Parol</span><input type="password" id="password" autocomplete="current-password" /></label>
       <button class="btn" id="emailSubmit" data-i18n="login">Giriş</button>
@@ -147,6 +148,7 @@
     <div class="dash hidden" id="centerTools">
       <div class="dash-head"><h3 data-i18n="centerTools">Mərkəz alətləri</h3></div>
       <a href="./meqsedler.html" style="display:flex;align-items:center;justify-content:space-between;text-decoration:none;background:var(--bg);border:1.5px solid var(--line);border-radius:14px;padding:14px 15px;margin-bottom:9px;color:var(--brand-dark);font-weight:800;font-size:15px;"><span data-i18n="toolGoals">Məqsəd Kitabxanası</span><span style="color:var(--muted);font-size:18px;">›</span></a>
+      <a href="./istifadeciler.html" id="toolUsersLink" class="hidden" style="display:flex;align-items:center;justify-content:space-between;text-decoration:none;background:var(--bg);border:1.5px solid var(--line);border-radius:14px;padding:14px 15px;margin-bottom:9px;color:var(--brand-dark);font-weight:800;font-size:15px;"><span data-i18n="toolUsers">İstifadəçilər</span><span style="color:var(--muted);font-size:18px;">›</span></a>
     </div>
     <div class="dash" id="parentDash">
       <div class="dash-head">
@@ -210,7 +212,8 @@ const I18N = {
     name:"Ad, Soyad", email:"E-poçt", password:"Parol", phone:"Telefon nömrəsi", sendCode:"Kod göndər", smsCode:"SMS kodu", confirm:"Təsdiqlə",
     welcome:"Xoş gəldiniz", role:"Rol", logout:"Çıxış", madeBy:"Hazırladı",
     rolValideyn:"Valideyn", rolTerapevt:"Terapevt", rolAdmin:"Admin",
-    centerTools:"Mərkəz alətləri", toolGoals:"Məqsəd Kitabxanası",
+    centerTools:"Mərkəz alətləri", toolGoals:"Məqsəd Kitabxanası", toolUsers:"İstifadəçilər",
+    therReg:"Mütəxəssis (terapevt) kimi qeydiyyat — admin təsdiqləyir",
     myChildren:"Övladlarım", addChild:"+ Uşaq əlavə et", noChildren:"Hələ uşaq əlavə etməmisiniz.",
     newChild:"Yeni uşaq-kartı",
     consentText:"Bu məlumatlar yalnız övladınızın inkişafını izləmək üçündür. Təhlükəsiz saxlanılır və yalnız siz, təyin olunmuş terapevt və mərkəz admini görə bilər. Razılığı istənilən vaxt geri götürə bilərsiniz.",
@@ -226,7 +229,8 @@ const I18N = {
     name:"Имя, Фамилия", email:"Эл. почта", password:"Пароль", phone:"Номер телефона", sendCode:"Отправить код", smsCode:"SMS-код", confirm:"Подтвердить",
     welcome:"Добро пожаловать", role:"Роль", logout:"Выход", madeBy:"Автор",
     rolValideyn:"Родитель", rolTerapevt:"Терапевт", rolAdmin:"Администратор",
-    centerTools:"Инструменты центра", toolGoals:"Библиотека целей",
+    centerTools:"Инструменты центра", toolGoals:"Библиотека целей", toolUsers:"Пользователи",
+    therReg:"Регистрация как специалист (терапевт) — подтверждает админ",
     myChildren:"Мои дети", addChild:"+ Добавить", noChildren:"Вы ещё не добавили ребёнка.",
     newChild:"Новая карта ребёнка",
     consentText:"Эти данные используются только для отслеживания развития вашего ребёнка. Хранятся безопасно и доступны только вам, назначенному терапевту и администратору центра. Согласие можно отозвать в любое время.",
@@ -259,14 +263,14 @@ tabEmail.onclick=()=>selectTab("email");tabPhone.onclick=()=>selectTab("phone");
 
 const nameField=document.getElementById("nameField"),emailBtn=document.getElementById("emailSubmit");
 function currentEmode(){return document.querySelector('input[name="emode"]:checked').value;}
-function syncEmailButton(){const reg=currentEmode()==="register";nameField.classList.toggle("hidden",!reg);emailBtn.textContent=reg?t("register"):t("login");document.getElementById("password").setAttribute("autocomplete",reg?"new-password":"current-password");}
+function syncEmailButton(){const reg=currentEmode()==="register";nameField.classList.toggle("hidden",!reg);document.getElementById("therField").classList.toggle("hidden",!reg);emailBtn.textContent=reg?t("register"):t("login");document.getElementById("password").setAttribute("autocomplete",reg?"new-password":"current-password");}
 document.querySelectorAll('input[name="emode"]').forEach(r=>r.addEventListener("change",()=>{clearMsg();syncEmailButton();}));
 
 emailBtn.addEventListener("click", async ()=>{
   const email=document.getElementById("email").value.trim(),pass=document.getElementById("password").value,ad=document.getElementById("name").value.trim();
   if(!email||!pass) return show("err",t("eFill"));
   emailBtn.disabled=true; show("ok",t("working"));
-  try{ if(currentEmode()==="register") await registerWithEmail(email,pass,ad); else await loginWithEmail(email,pass); clearMsg(); }
+  try{ if(currentEmode()==="register") await registerWithEmail(email,pass,ad,{talebRol:document.getElementById("therChk").checked?"terapevt":null}); else await loginWithEmail(email,pass); clearMsg(); }
   catch(e){ show("err", e?.message||t("eGeneric")); } finally{ emailBtn.disabled=false; }
 });
 
@@ -370,6 +374,7 @@ onUser((user, rol)=>{
     document.getElementById("role").textContent=t(rolMap[currentRol]||"rolValideyn");
     const isAdmin=currentRol==="admin", isTher=currentRol==="terapevt";
     document.getElementById("centerTools").classList.toggle("hidden", !(isAdmin||isTher));
+    document.getElementById("toolUsersLink").classList.toggle("hidden", !isAdmin);
     document.getElementById("parentDash").classList.toggle("hidden", isAdmin);
     addChildBtn.classList.toggle("hidden", isTher||isAdmin);
     loadChildren();
