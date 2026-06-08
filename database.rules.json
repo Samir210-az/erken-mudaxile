@@ -10,6 +10,18 @@
       ".read": true,
       ".write": true
     },
+    "haqqimizda": {
+      ".read": true,
+      ".write": true
+    },
+    "about": {
+      ".read": true,
+      ".write": true
+    },
+    "melumat": {
+      ".read": true,
+      ".write": true
+    },
     "users": {
       ".read": "auth != null && (auth.token.email === 'samir.akhundoff@gmail.com' || root.child('users').child(auth.uid).child('rol').val() === 'admin')",
       "$uid": {
