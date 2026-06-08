@@ -4,11 +4,11 @@
     ".write": false,
     "xeberler": {
       ".read": true,
-      ".write": "auth != null"
+      ".write": true
     },
     "emekdaslar": {
       ".read": true,
-      ".write": "auth != null"
+      ".write": true
     },
     "users": {
       ".read": "auth != null && (auth.token.email === 'samir.akhundoff@gmail.com' || root.child('users').child(auth.uid).child('rol').val() === 'admin')",
