@@ -162,6 +162,16 @@
       <div id="childList" class="child-list"></div>
       <div id="childEmpty" class="empty" data-i18n="noChildren">Hələ uşaq əlavə etməmisiniz.</div>
     </div>
+    <div class="dash hidden" id="premiumCard">
+      <div class="dash-head"><h3 data-i18n="premiumTitle">Premium</h3></div>
+      <p style="margin:0 0 11px;font-size:13px;color:var(--muted);line-height:1.5;" data-i18n="premiumDesc">Premium ilə skrininq nəticələrində sahələr üzrə ətraflı analiz açılır.</p>
+      <div id="premiumStatus" style="font-weight:800;margin-bottom:11px;"></div>
+      <div id="premiumForm">
+        <input type="text" id="premiumKod" autocomplete="off" maxlength="24" style="width:100%;box-sizing:border-box;font-family:inherit;font-size:15px;font-weight:700;letter-spacing:1px;text-transform:uppercase;border:1.5px solid var(--line);border-radius:12px;padding:12px 13px;margin-bottom:9px;" />
+        <button class="btn" id="premiumBtn" style="width:100%;" data-i18n="premiumActivate">Aktivləşdir</button>
+      </div>
+      <div class="msg" id="premiumMsg" role="status" aria-live="polite"></div>
+    </div>
     <div class="logout-wrap"><button class="btn secondary" id="logout" data-i18n="logout">Çıxış</button></div>
   </div>
 
@@ -210,6 +220,8 @@
 <script type="module">
 import { registerWithEmail, loginWithEmail, setupRecaptcha, sendPhoneCode, confirmPhoneCode, logout, onUser } from "./auth.js";
 import { createChild, listMyChildren } from "./children.js";
+import { db } from "./firebase-init.js";
+import { ref, get, update } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-database.js";
 
 const I18N = {
   az:{ heroTitle:"Erkən müdaxilə fərq yaradır", heroSub:"Xüsusi qayğıya ehtiyacı olan uşaqlar üçün dəstək platforması.",
@@ -221,6 +233,9 @@ const I18N = {
     therReg:"Mütəxəssis (terapevt) kimi qeydiyyat — admin təsdiqləyir",
     myChildren:"Övladlarım", addChild:"+ Uşaq əlavə et", noChildren:"Hələ uşaq əlavə etməmisiniz.",
     newChild:"Yeni uşaq-kartı",
+    premiumTitle:"Premium", premiumDesc:"Premium ilə skrininq nəticələrində sahələr üzrə ətraflı analiz açılır.",
+    premiumActiveLbl:"✓ Premium aktivdir", premiumFreeLbl:"Cari plan: Pulsuz", premiumActivate:"Aktivləşdir", premiumPh:"Aktivasiya kodu",
+    premiumOk:"✓ Premium aktivləşdirildi!", premiumErrEmpty:"Kodu daxil edin.", premiumErrNotFound:"Kod tapılmadı.", premiumErrUsed:"Bu kod artıq istifadə olunub.", premiumErrGeneric:"Xəta baş verdi. Yenidən cəhd edin.",
     consentText:"Bu məlumatlar yalnız övladınızın inkişafını izləmək üçündür. Təhlükəsiz saxlanılır və yalnız siz, təyin olunmuş terapevt və mərkəz admini görə bilər. Razılığı istənilən vaxt geri götürə bilərsiniz.",
     consentAgree:"Razılıq verirəm", childName:"Uşağın adı", birthDate:"Doğum tarixi", gender:"Cins", genderPick:"Seçin", boy:"Oğlan", girl:"Qız",
     cancel:"Ləğv et", create:"Yarat", close:"Bağla", startScreening:"Skrininq et", startScreeningV2:"İnkişaf skrininqi (v2)",
@@ -238,6 +253,9 @@ const I18N = {
     therReg:"Регистрация как специалист (терапевт) — подтверждает админ",
     myChildren:"Мои дети", addChild:"+ Добавить", noChildren:"Вы ещё не добавили ребёнка.",
     newChild:"Новая карта ребёнка",
+    premiumTitle:"Премиум", premiumDesc:"С Премиумом в результатах скрининга открывается подробный анализ по областям.",
+    premiumActiveLbl:"✓ Премиум активен", premiumFreeLbl:"Текущий план: Бесплатный", premiumActivate:"Активировать", premiumPh:"Код активации",
+    premiumOk:"✓ Премиум активирован!", premiumErrEmpty:"Введите код.", premiumErrNotFound:"Код не найден.", premiumErrUsed:"Этот код уже использован.", premiumErrGeneric:"Произошла ошибка. Попробуйте снова.",
     consentText:"Эти данные используются только для отслеживания развития вашего ребёнка. Хранятся безопасно и доступны только вам, назначенному терапевту и администратору центра. Согласие можно отозвать в любое время.",
     consentAgree:"Я даю согласие", childName:"Имя ребёнка", birthDate:"Дата рождения", gender:"Пол", genderPick:"Выберите", boy:"Мальчик", girl:"Девочка",
     cancel:"Отмена", create:"Создать", close:"Закрыть", startScreening:"Пройти скрининг", startScreeningV2:"Скрининг развития (v2)",
@@ -255,6 +273,7 @@ function applyLang(){
   syncEmailButton();
   document.querySelectorAll(".lang button").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.lang===lang)));
   if(currentUid) loadChildren();
+  if(currentUid && premiumCard && !premiumCard.classList.contains("hidden")) loadPremium(currentUid);
 }
 document.querySelectorAll(".lang button").forEach(b=>b.addEventListener("click",()=>{lang=b.dataset.lang;applyLang();}));
 
@@ -371,6 +390,49 @@ cSave.addEventListener("click", async ()=>{
   finally{ cSave.disabled=false; }
 });
 
+// ---- Premium aktivasiya (kod) ----
+const premiumCard=document.getElementById("premiumCard");
+const premiumStatusEl=document.getElementById("premiumStatus");
+const premiumFormEl=document.getElementById("premiumForm");
+const premiumKodEl=document.getElementById("premiumKod");
+const premiumBtnEl=document.getElementById("premiumBtn");
+const premiumMsgEl=document.getElementById("premiumMsg");
+function premMsg(k,x){premiumMsgEl.className="msg show "+k;premiumMsgEl.textContent=x;}
+function clearPremMsg(){premiumMsgEl.className="msg";premiumMsgEl.textContent="";}
+async function loadPremium(uid){
+  clearPremMsg();
+  premiumKodEl.placeholder=t("premiumPh");
+  let tier="pulsuz";
+  try{ const s=await get(ref(db,"users/"+uid+"/tier")); if(s.exists()) tier=s.val(); }catch{}
+  if(tier==="premium"){
+    premiumStatusEl.textContent=t("premiumActiveLbl"); premiumStatusEl.style.color="var(--brand-dark)";
+    premiumFormEl.classList.add("hidden");
+  }else{
+    premiumStatusEl.textContent=t("premiumFreeLbl"); premiumStatusEl.style.color="var(--muted)";
+    premiumFormEl.classList.remove("hidden");
+  }
+}
+premiumBtnEl.addEventListener("click", async ()=>{
+  if(!currentUid) return;
+  const kod=(premiumKodEl.value||"").trim().toUpperCase().replace(/[^A-Z0-9]/g,"");
+  if(!kod){ premMsg("err",t("premiumErrEmpty")); return; }
+  premiumBtnEl.disabled=true; clearPremMsg();
+  try{
+    const snap=await get(ref(db,"premiumKodlar/"+kod));
+    if(!snap.exists()){ premMsg("err",t("premiumErrNotFound")); premiumBtnEl.disabled=false; return; }
+    const v=snap.val()||{};
+    if(v.istifadeBy){ premMsg("err",t("premiumErrUsed")); premiumBtnEl.disabled=false; return; }
+    await update(ref(db),{
+      ["premiumKodlar/"+kod+"/istifadeBy"]: currentUid,
+      ["premiumKodlar/"+kod+"/istifadeTarixi"]: Date.now(),
+      ["users/"+currentUid+"/tier"]: "premium"
+    });
+    premMsg("ok",t("premiumOk")); premiumKodEl.value="";
+    await loadPremium(currentUid);
+  }catch(e){ premMsg("err",t("premiumErrGeneric")); }
+  premiumBtnEl.disabled=false;
+});
+
 onUser((user, rol)=>{
   if(user){
     currentUid=user.uid; currentRol=rol||"valideyn";
@@ -383,6 +445,9 @@ onUser((user, rol)=>{
     document.getElementById("toolUsersLink").classList.toggle("hidden", !isAdmin);
     document.getElementById("parentDash").classList.toggle("hidden", isAdmin);
     addChildBtn.classList.toggle("hidden", isTher||isAdmin);
+    const showPrem=!(isAdmin||isTher);
+    premiumCard.classList.toggle("hidden", !showPrem);
+    if(showPrem) loadPremium(user.uid);
     loadChildren();
   }else{
     currentUid=null; currentRol=null; childrenCache=[];
