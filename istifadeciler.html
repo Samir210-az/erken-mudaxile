@@ -94,6 +94,13 @@
     <div id="list"></div>
   </div>
 
+  <div class="card hidden" id="kodCard">
+    <h1 data-i18n="kodTitle">Premium kodları</h1>
+    <p class="lead" data-i18n="kodLead">Yeni kod yarat və valideynə ver. Hər kod bir dəfə istifadə olunur.</p>
+    <button class="btn" id="kodNewBtn" data-i18n="kodNew">+ Yeni kod yarat</button>
+    <div id="kodList" style="margin-top:14px;"></div>
+  </div>
+
   <div class="foot">
     <span data-i18n="madeBy">Hazırladı</span> <a href="https://instagram.com/s_akhundoff" target="_blank" rel="noopener">@s_akhundoff</a>
     <span class="org">AN Psixoloji Dəstək və Reabilitasiya Mərkəzi</span>
@@ -114,6 +121,7 @@ const T = {
     searchPh:"Ad və ya e-poçt üzrə axtar", madeBy:"Hazırladı",
     rolValideyn:"Valideyn", rolTerapevt:"Terapevt", rolAdmin:"Admin",
     reqTher:"terapevt istəyib", saved:"✓ saxlanıldı", err:"xəta", save:"Saxla",
+    kodTitle:"Premium kodları", kodLead:"Yeni kod yarat və valideynə ver. Hər kod bir dəfə istifadə olunur.", kodNew:"+ Yeni kod yarat", kodNone:"Hələ kod yoxdur.", kodUsed:"istifadə olunub", kodFree:"aktiv", kodCopy:"Kopyala", kodCopied:"✓ kopyalandı",
     cntN:n=>`${n} istifadəçi`, empty:"İstifadəçi tapılmadı.", noPhone:"telefon yoxdur" },
   ru:{ brandSub:"Пользователи", logout:"Выход",
     needLoginT:"Требуется вход", needLoginP:"Войдите в аккаунт для этой страницы.", goLogin:"Страница входа",
@@ -122,6 +130,7 @@ const T = {
     searchPh:"Поиск по имени или эл. почте", madeBy:"Автор",
     rolValideyn:"Родитель", rolTerapevt:"Терапевт", rolAdmin:"Администратор",
     reqTher:"запросил терапевта", saved:"✓ сохранено", err:"ошибка", save:"Сохранить",
+    kodTitle:"Премиум-коды", kodLead:"Создайте код и передайте родителю. Каждый код используется один раз.", kodNew:"+ Создать код", kodNone:"Кодов пока нет.", kodUsed:"использован", kodFree:"активен", kodCopy:"Копировать", kodCopied:"✓ скопировано",
     cntN:n=>`${n} пользователей`, empty:"Пользователи не найдены.", noPhone:"нет телефона" },
 };
 
@@ -210,20 +219,50 @@ async function load(){
 document.querySelectorAll(".lang button").forEach(b=>b.onclick=()=>{
   lang=b.dataset.lang;
   document.querySelectorAll(".lang button").forEach(x=>x.setAttribute("aria-pressed",x.dataset.lang===lang));
-  applyI18n(); render();
+  applyI18n(); render(); renderKodlar();
 });
 $("logoutBtn").onclick=()=>logout();
 $("search").oninput=e=>{ filter=e.target.value; render(); };
 
 applyI18n();
 
+// ---- Premium kodları ----
+function genKod(){ const c="ABCDEFGHJKLMNPQRSTUVWXYZ23456789"; let s=""; for(let i=0;i<10;i++) s+=c[Math.floor(Math.random()*c.length)]; return s; }
+let kodlar=[];
+function renderKodlar(){
+  const wrap=$("kodList"); wrap.innerHTML="";
+  if(!kodlar.length){ wrap.innerHTML=`<div class="empty">${esc(t("kodNone"))}</div>`; return; }
+  kodlar.sort((a,b)=>(b.yaradilma||0)-(a.yaradilma||0));
+  kodlar.forEach(k=>{
+    const used=!!k.istifadeBy;
+    const el=document.createElement("div"); el.className="urow";
+    el.innerHTML=`<div style="flex:1;min-width:0;"><div style="font-weight:800;font-size:16px;letter-spacing:1px;font-family:ui-monospace,monospace;">${esc(k.kod)}</div><div style="font-size:12px;font-weight:700;margin-top:2px;color:${used?"var(--muted)":"var(--brand-dark)"};">${used?esc(t("kodUsed")):esc(t("kodFree"))}</div></div>${used?"":`<button class="savebtn" data-copy="${esc(k.kod)}">${esc(t("kodCopy"))}</button>`}`;
+    wrap.appendChild(el);
+  });
+  wrap.querySelectorAll("button[data-copy]").forEach(b=>b.onclick=async()=>{
+    try{ await navigator.clipboard.writeText(b.dataset.copy); b.textContent=t("kodCopied"); setTimeout(()=>{b.textContent=t("kodCopy");},1500); }catch{}
+  });
+}
+async function loadKodlar(){
+  try{ const s=await get(ref(db,"premiumKodlar")); kodlar=[]; if(s.exists()){ const v=s.val(); kodlar=Object.keys(v).map(kod=>({kod,...v[kod]})); } }
+  catch(e){ kodlar=[]; }
+  renderKodlar();
+}
+$("kodNewBtn").onclick=async()=>{
+  const kod=genKod();
+  try{ await update(ref(db),{["premiumKodlar/"+kod]:{yaradilma:Date.now(),istifadeBy:null}}); await loadKodlar(); }
+  catch(e){ alert(t("err")+": "+e.message); }
+};
+
 onUser(async (user, rol)=>{
+  $("kodCard").classList.add("hidden");
   if(!user){ showCard("authGate"); $("logoutBtn").classList.add("hidden"); return; }
   $("logoutBtn").classList.remove("hidden");
   const isAdmin=(rol==="admin" || user.email===ADMIN_EMAIL);
   if(!isAdmin){ showCard("denied"); return; }
   showCard("app");
-  try{ await load(); }
+  $("kodCard").classList.remove("hidden");
+  try{ await load(); await loadKodlar(); }
   catch(e){ $("list").innerHTML=`<div class="empty">${esc(t("err"))}: ${esc(e.message)}</div>`; }
 });
 </script>
