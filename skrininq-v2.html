@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="az">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="theme-color" content="#2f8f83" />
+<title>AN-Skrininq v2 — İnkişaf Skrininqi</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#f6f3ec;--ink:#2a2926;--muted:#6f6a61;--line:#e6e0d4;--card:#fff;--brand:#2f8f83;--brand-dark:#236b62;--brand-soft:#e3f0ed;--accent:#e0975a;--amber-soft:#f6ecd9;--danger:#c0533f;--danger-soft:#faeae6;--ok:#3a8a5f;--ok-soft:#e3f1e8;--radius:20px;--shadow:0 10px 30px rgba(35,107,98,.10),0 2px 8px rgba(0,0,0,.04);}
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  html,body{margin:0;padding:0;}
+  body{font-family:"Nunito",system-ui,sans-serif;color:var(--ink);background:var(--bg);background-image:radial-gradient(120% 80% at 85% -10%,#e7f1ee 0%,rgba(231,241,238,0) 55%),radial-gradient(100% 70% at -10% 110%,#f4e7d8 0%,rgba(244,231,216,0) 55%);background-attachment:fixed;min-height:100dvh;line-height:1.45;-webkit-font-smoothing:antialiased;}
+  .wrap{max-width:460px;margin:0 auto;padding:max(20px,env(safe-area-inset-top)) 18px calc(28px + env(safe-area-inset-bottom));min-height:100dvh;display:flex;flex-direction:column;}
+  .topbar{display:flex;align-items:center;justify-content:space-between;padding:6px 2px 16px;gap:8px;}
+  .brand{display:flex;align-items:center;gap:11px;min-width:0;}
+  .mark{width:40px;height:40px;flex:0 0 40px;}
+  .brand-name{font-weight:900;font-size:16px;line-height:1.1;}
+  .brand-name small{display:block;font-weight:700;font-size:10.5px;color:var(--brand-dark);letter-spacing:.4px;text-transform:uppercase;}
+  .tools{display:flex;align-items:center;gap:8px;}
+  .lang{display:flex;gap:4px;background:#fff;border:1px solid var(--line);border-radius:999px;padding:3px;}
+  .lang button{border:0;background:transparent;font-family:inherit;font-weight:700;font-size:13px;color:var(--muted);padding:6px 11px;border-radius:999px;cursor:pointer;}
+  .lang button[aria-pressed="true"]{background:var(--brand);color:#fff;}
+  .logout-ico{border:1px solid var(--line);background:#fff;border-radius:999px;padding:7px 12px;font-family:inherit;font-weight:800;font-size:12px;color:var(--brand-dark);cursor:pointer;}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:20px 17px;animation:rise .45s ease both;}
+  h1{font-size:21px;line-height:1.2;margin:0 0 8px;letter-spacing:-.4px;}
+  .lead{color:var(--muted);font-weight:600;font-size:14px;margin:0 0 14px;}
+  .btn{width:100%;border:0;font-family:inherit;font-weight:800;font-size:16px;color:#fff;background:var(--brand);padding:15px;border-radius:14px;cursor:pointer;transition:transform .08s;text-align:center;text-decoration:none;display:block;}
+  .btn:active{transform:scale(.985);}
+  .btn.secondary{background:#fff;color:var(--brand-dark);border:1.5px solid var(--line);}
+  .btn:disabled{opacity:.55;}
+  .hidden{display:none !important;}
+  .back{display:inline-block;color:var(--brand-dark);font-weight:800;font-size:13px;text-decoration:none;margin-bottom:10px;cursor:pointer;}
+  .disc{background:var(--amber-soft);color:#7a5512;border-radius:12px;padding:11px 13px;font-size:12.5px;font-weight:700;margin:6px 0 14px;line-height:1.5;}
+  .pickitem{width:100%;text-align:left;background:#fff;border:1.5px solid var(--line);border-radius:14px;padding:14px 15px;margin-bottom:9px;font-family:inherit;font-weight:800;font-size:15px;color:var(--ink);cursor:pointer;}
+  .dgroup{margin-bottom:6px;}
+  .dgroup h3{font-size:14px;color:var(--brand-dark);margin:14px 2px 4px;}
+  .q{padding:12px 0;border-bottom:1px solid var(--line);}
+  .q .qt{font-weight:700;font-size:14px;margin-bottom:9px;}
+  .seg{display:flex;gap:6px;}
+  .seg label{flex:1;text-align:center;border:1.5px solid var(--line);border-radius:10px;padding:9px 4px;font-weight:800;font-size:12.5px;color:var(--muted);cursor:pointer;background:#fff;position:relative;}
+  .seg input{position:absolute;opacity:0;width:0;height:0;}
+  .seg label:has(input:checked){background:var(--brand);border-color:var(--brand);color:#fff;}
+  .prog{position:sticky;bottom:0;background:linear-gradient(180deg,rgba(246,243,236,0),var(--bg) 40%);padding-top:12px;}
+  .msg{font-weight:800;font-size:13px;padding:10px 12px;border-radius:10px;margin:10px 0;}
+  .msg.err{background:var(--danger-soft);color:var(--danger);}
+  .riskband{border-radius:14px;padding:16px;text-align:center;margin-bottom:14px;}
+  .riskband .lvl{font-size:20px;font-weight:900;}
+  .riskband .sc{font-size:13px;font-weight:700;opacity:.85;margin-top:3px;}
+  .risk-asagi{background:var(--ok-soft);color:var(--ok);}
+  .risk-orta{background:var(--amber-soft);color:#9a6a14;}
+  .risk-yuksek{background:var(--danger-soft);color:var(--danger);}
+  .refer{background:var(--brand-soft);color:var(--brand-dark);border-radius:12px;padding:13px 14px;font-weight:700;font-size:13.5px;line-height:1.55;margin-bottom:14px;}
+  .premium{border:1.5px dashed var(--line);border-radius:14px;padding:14px;margin-bottom:14px;}
+  .premium h3{margin:0 0 10px;font-size:15px;}
+  .lock{color:var(--muted);font-weight:700;font-size:13px;}
+  .bar{margin-bottom:9px;}
+  .bar .bl{display:flex;justify-content:space-between;font-size:12.5px;font-weight:800;margin-bottom:3px;}
+  .bar .bl .flag{color:var(--danger);}
+  .bar .track{background:var(--line);border-radius:999px;height:9px;overflow:hidden;}
+  .bar .fill{height:100%;border-radius:999px;background:var(--brand);}
+  .bar .fill.hi{background:var(--accent);}
+  .sumbox{background:#fff;border:1.5px solid var(--line);border-radius:12px;padding:12px 13px;font-size:12.5px;font-weight:600;color:var(--muted);margin-bottom:14px;line-height:1.5;}
+  .foot{margin-top:auto;padding-top:24px;text-align:center;color:var(--muted);font-size:12.5px;font-weight:600;}
+  .foot a{color:var(--brand-dark);text-decoration:none;font-weight:800;}
+  .foot .org{display:block;margin-top:4px;}
+  @keyframes rise{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:none;}}
+  @media (min-width:768px){
+    .wrap{max-width:680px;padding-top:32px;}
+    .card{padding:26px 28px;}
+  }
+  @media print{
+    body{background:#fff;}
+    .topbar,.prog,.btn,.back,.lang,.logout-ico{display:none !important;}
+    .card{box-shadow:none;border:1px solid #ccc;}
+    .premium{border:1px solid #ccc;}
+  }
+  @media (prefers-reduced-motion:reduce){*{animation:none !important;}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="topbar">
+    <div class="brand">
+      <svg class="mark" viewBox="0 0 48 48" fill="none" aria-hidden="true"><rect width="48" height="48" rx="14" fill="#e3f0ed"/><path d="M24 36c0-7 0-10-4.5-13.5C16 19.8 13 19.5 13 19.5s.2 3.2 3 6c3 3 8 3.5 8 10.5z" fill="#2f8f83"/><path d="M24 33c0-6 0-8.5 4-11.5 3-2.2 6-2.5 6-2.5s-.2 3-3 5.5c-2.7 2.5-7 3-7 8.5z" fill="#7bbcae"/><path d="M24 36V21" stroke="#236b62" stroke-width="2.4" stroke-linecap="round"/><circle cx="24" cy="14.5" r="3.6" fill="#e0975a"/></svg>
+      <div class="brand-name">AN<small data-i18n="brandSub">İnkişaf Skrininqi v2</small></div>
+    </div>
+    <div class="tools">
+      <div class="lang" role="group" aria-label="Dil / Язык"><button data-lang="az" aria-pressed="true">AZ</button><button data-lang="ru" aria-pressed="false">RU</button></div>
+      <button class="logout-ico hidden" id="logoutBtn" data-i18n="logout">Çıxış</button>
+    </div>
+  </div>
+
+  <div class="card hidden" id="authGate">
+    <h1 data-i18n="needLoginT">Giriş tələb olunur</h1>
+    <p class="lead" data-i18n="needLoginP">Skrininq üçün hesabınıza daxil olun.</p>
+    <a class="btn" href="./index.html" data-i18n="goLogin">Giriş səhifəsi</a>
+  </div>
+
+  <div class="card hidden" id="pick">
+    <a class="back" href="./index.html" data-i18n="backHome">‹ Panelə qayıt</a>
+    <h1 data-i18n="pickT">Uşağı seçin</h1>
+    <p class="lead" data-i18n="pickP">Skrininqi hansı uşaq üçün doldurursunuz?</p>
+    <div id="pickList"></div>
+    <div class="empty hidden" id="pickEmpty" data-i18n="pickEmpty">Əlçatan uşaq yoxdur.</div>
+  </div>
+
+  <div class="card hidden" id="quiz">
+    <a class="back" id="quizBack" data-i18n="backHome">‹ Panelə qayıt</a>
+    <h1 data-i18n="quizT">İnkişaf Skrininqi</h1>
+    <p class="lead" id="quizFor"></p>
+    <div class="disc" data-i18n="disc">Bu ilkin skrininqdir, tibbi diaqnoz deyil. Hər bənd üçün uşağınıza ən uyğun cavabı seçin.</div>
+    <div id="qForm"></div>
+    <div id="quizMsg"></div>
+    <div class="prog"><button class="btn" id="quizNext" data-i18n="next">Davam et</button></div>
+  </div>
+
+  <div class="card hidden" id="followup">
+    <h1 data-i18n="fuT">Bir neçə əlavə sual</h1>
+    <p class="lead" data-i18n="fuP">Nəticəni dəqiqləşdirmək üçün:</p>
+    <div id="fuForm"></div>
+    <div id="fuMsg"></div>
+    <button class="btn" id="fuNext" data-i18n="showResult">Nəticəni göstər</button>
+  </div>
+
+  <div class="card hidden" id="result">
+    <h1 data-i18n="resT">Skrininq nəticəsi</h1>
+    <p class="lead" id="resFor"></p>
+    <div class="riskband" id="riskBand"><div class="lvl" id="riskLvl">—</div><div class="sc" id="riskSc"></div></div>
+    <div class="disc" data-i18n="disc2">Diqqət: bu nəticə ilkin skrininqdir və tibbi diaqnoz deyil. Yalnız mütəxəssis qiymətləndirməsi diaqnoz qoya bilər.</div>
+    <div class="refer" id="referBox"></div>
+    <div class="premium" id="premiumBox"></div>
+    <div class="sumbox hidden" id="fuSummary"></div>
+    <button class="btn secondary" id="printBtn" data-i18n="printBtn">Çap / PDF</button>
+    <button class="btn" id="againBtn" style="margin-top:10px;" data-i18n="again">Yeni skrininq</button>
+  </div>
+
+  <div class="foot">
+    <span data-i18n="madeBy">Hazırladı</span> <a href="https://instagram.com/s_akhundoff" target="_blank" rel="noopener">@s_akhundoff</a>
+    <span class="org">AN Psixoloji Dəstək və Reabilitasiya Mərkəzi</span>
+  </div>
+</div>
+
+<script type="module">
+import { onUser, logout } from "./auth.js";
+import { db } from "./firebase-init.js";
+import { ref, get } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-database.js";
+import { SABIT_DOMENLER, DOMEN_ETIKETLERI, listMyChildren, addSkrininqNeticesi } from "./children.js";
+
+// ── AN-Skrininq-v2 — orijinal, geniş inkişaf, 7 domen, hər bənd 0/1/2 (narahatlıq) ──
+const ITEMS = {
+  nitq:[
+    {az:"Adı çağırılanda baxmır və ya reaksiya vermir.", ru:"Не смотрит и не реагирует, когда его зовут по имени."},
+    {az:"Yaşına uyğun söz və ya səslərdən az istifadə edir.", ru:"Использует меньше слов или звуков, чем ожидается для возраста."},
+    {az:"İstədiyini sözlə deyil, ağlamaq/dartmaqla bildirir.", ru:"Выражает желания плачем/тасканием, а не словами."},
+    {az:"Sadə göstərişləri (məs. \"topu ver\") başa düşmür.", ru:"Не понимает простые инструкции (напр. «дай мяч»)."},
+    {az:"Eşitdiyi söz və ya səsləri təkrarlamır.", ru:"Не повторяет услышанные слова или звуки."},
+  ],
+  sosial:[
+    {az:"Göz təması zəifdir və ya ondan qaçır.", ru:"Слабый зрительный контакт или избегает его."},
+    {az:"Maraqlı bir şeyi göstərmək üçün barmaqla işarə etmir.", ru:"Не указывает пальцем, чтобы показать интересное."},
+    {az:"Çağıranda və ya gülümsəyəndə qarşılıq vermir.", ru:"Не отвечает вниманием/улыбкой на обращение."},
+    {az:"Başqa uşaqlarla maraqlanmır, daim tək qalır.", ru:"Не интересуется другими детьми, постоянно один."},
+    {az:"Böyüklə birgə baxmağa/diqqəti paylaşmağa cəhd etmir.", ru:"Не разделяет внимание со взрослым (не смотрит вместе)."},
+  ],
+  davranis:[
+    {az:"Eyni hərəkətləri təkrar edir (yellənmə, əl çırpma və s.).", ru:"Повторяет одни и те же движения (раскачивание, взмахи и т.п.)."},
+    {az:"Gündəlik qaydanın dəyişməsinə güclü etiraz edir.", ru:"Сильно протестует при изменении распорядка."},
+    {az:"Səs, işıq və ya toxunuşa həddən artıq həssas/reaksiyasızdır.", ru:"Чрезмерно чувствителен или нечувствителен к звуку, свету, прикосновению."},
+    {az:"Bir əşya və ya mövzuya həddindən artıq bağlıdır.", ru:"Чрезмерно сосредоточен на одном предмете или теме."},
+    {az:"Sakitləşmək çətindir, tez-tez davranış partlayışları olur.", ru:"С трудом успокаивается, частые вспышки поведения."},
+  ],
+  ozunexidmet:[
+    {az:"Yaşına uyğun özü yeməkdə (qaşıq, stəkan) çətinlik çəkir.", ru:"Затрудняется самостоятельно есть (ложка, стакан) по возрасту."},
+    {az:"Geyinmə/soyunmada iştirak etmir.", ru:"Не участвует в одевании/раздевании."},
+    {az:"Tualet vərdişlərində yaşına uyğun gecikmə var.", ru:"Отставание в туалетных навыках по возрасту."},
+    {az:"Əl yumaq kimi sadə gigiyenik işləri etmir.", ru:"Не выполняет простые гигиенические действия (мытьё рук)."},
+    {az:"Gündəlik işlərdə həddən artıq köməyə möhtacdır.", ru:"Чрезмерно зависим от помощи в повседневных делах."},
+  ],
+  idrak:[
+    {az:"Yaşına uyğun oyuncaqlarla məqsədyönlü oynamır.", ru:"Не играет целенаправленно с игрушками по возрасту."},
+    {az:"Sadə əşyaları tanımır və ya uyğunlaşdırmır.", ru:"Не узнаёт и не сопоставляет простые предметы."},
+    {az:"Diqqətini qısa müddətə belə cəmləyə bilmir.", ru:"Не может сосредоточить внимание даже ненадолго."},
+    {az:"Yeni şeyləri öyrənmək marağı zəifdir.", ru:"Слабый интерес к изучению нового."},
+    {az:"Sadə problemləri (qutu açmaq və s.) həll etməyə cəhd etmir.", ru:"Не пытается решать простые задачи (открыть коробку и т.п.)."},
+  ],
+  "boyuk-motorika":[
+    {az:"Yaşına uyğun oturma/yerimə/qaçmada gecikmə var.", ru:"Отставание в сидении/ходьбе/беге по возрасту."},
+    {az:"Müvazinəti saxlamaq çətindir, tez-tez yıxılır.", ru:"Трудно удерживает равновесие, часто падает."},
+    {az:"Pilləkən qalxıb-düşməkdə çətinlik çəkir.", ru:"Затрудняется подниматься/спускаться по лестнице."},
+    {az:"Top atmaq/tutmaq kimi hərəkətləri çətinliklə edir.", ru:"С трудом бросает/ловит мяч."},
+    {az:"Hərəkətləri yaşıdlarına nisbətən yöndəmsizdir.", ru:"Движения неуклюжи по сравнению со сверстниками."},
+  ],
+  "ince-motorika":[
+    {az:"Kiçik əşyaları barmaqları ilə tutmaqda çətinlik çəkir.", ru:"Затрудняется брать мелкие предметы пальцами."},
+    {az:"Karandaş/qələm tutub cızmağa cəhd etmir.", ru:"Не пытается держать карандаш и рисовать."},
+    {az:"Kublardan qüllə qurmaq kimi işləri etmir.", ru:"Не строит башню из кубиков и т.п."},
+    {az:"Kitab səhifələrini çevirməkdə çətinlik çəkir.", ru:"Затрудняется перелистывать страницы."},
+    {az:"Əl-göz koordinasiyası zəifdir.", ru:"Слабая зрительно-моторная координация."},
+  ],
+};
+
+const FU = [
+  {key:"muddet", az:"Bu çətinliklər nə vaxtdan müşahidə olunur?", ru:"С какого времени наблюдаются эти трудности?",
+   opts:[{v:"yeni",az:"Yeni / 1 aydan az",ru:"Недавно / меньше месяца"},{v:"aylar",az:"Bir neçə aydır",ru:"Несколько месяцев"},{v:"coxdan",az:"Çoxdan / doğuşdan bəri",ru:"Давно / с рождения"}]},
+  {key:"muhit", az:"Bu çətinliklər hər mühitdə (ev, bağça, qonaq) görünür?", ru:"Проявляются ли трудности во всех средах (дом, сад, гости)?",
+   opts:[{v:"hamisi",az:"Bəli, demək olar hər yerdə",ru:"Да, почти везде"},{v:"bezi",az:"Yalnız bəzi mühitlərdə",ru:"Только в некоторых средах"}]},
+  {key:"gerileme", az:"Uşaq əvvəl bacardığı bir bacarığı itirib?", ru:"Терял ли ребёнок ранее приобретённый навык?",
+   opts:[{v:"beli",az:"Bəli",ru:"Да"},{v:"xeyr",az:"Xeyr",ru:"Нет"}]},
+];
+
+const T = {
+  az:{ brandSub:"İnkişaf Skrininqi v2", logout:"Çıxış",
+    needLoginT:"Giriş tələb olunur", needLoginP:"Skrininq üçün hesabınıza daxil olun.", goLogin:"Giriş səhifəsi",
+    backHome:"‹ Panelə qayıt", pickT:"Uşağı seçin", pickP:"Skrininqi hansı uşaq üçün doldurursunuz?", pickEmpty:"Əlçatan uşaq yoxdur.",
+    quizT:"İnkişaf Skrininqi", forChild:c=>"Uşaq: "+c, disc:"Bu ilkin skrininqdir, tibbi diaqnoz deyil. Hər bənd üçün ən uyğun cavabı seçin.",
+    disc2:"Diqqət: bu nəticə ilkin skrininqdir və tibbi diaqnoz deyil. Yalnız mütəxəssis qiymətləndirməsi diaqnoz qoya bilər.",
+    next:"Davam et", segNo:"Xeyr", segSome:"Bəzən", segYes:"Bəli",
+    remain:n=>"Zəhmət olmasa bütün sualları cavablayın. Qalan: "+n,
+    fuT:"Bir neçə əlavə sual", fuP:"Nəticəni dəqiqləşdirmək üçün:", showResult:"Nəticəni göstər", fuRemain:"Zəhmət olmasa bütün sualları cavablayın.",
+    resT:"Skrininq nəticəsi", score:(t,m)=>"Ümumi bal: "+t+" / "+m,
+    asagi:"Aşağı risk", orta:"Orta risk", yuksek:"Yüksək risk",
+    refAsagi:"Nəticə aşağı risk göstərir. İnkişafı izləməyə davam edin; hər hansı narahatlıq olarsa uşaq psixoloqu və ya inkişaf mütəxəssisinə müraciət edin.",
+    refOrta:"Nəticə bəzi sahələrdə diqqət tələb olunduğunu göstərir. Uşaq psixoloqu və ya inkişaf mütəxəssisi ilə məsləhətləşməyiniz tövsiyə olunur.",
+    refYuksek:"Nəticə bir neçə sahədə əhəmiyyətli narahatlıq göstərir. Mümkün qədər tez uşaq psixoloqu və ya inkişaf mütəxəssisinə müraciət edin.",
+    refReg:" Əvvəl qazanılmış bacarığın itirilməsi mütləq mütəxəssis qiymətləndirməsi tələb edir.",
+    refRecent:" Çətinliklər yeni və yalnız bəzi mühitlərdə olduğundan, bir müddət müşahidə edib təkrar qiymətləndirmək olar.",
+    premiumT:"Domenlər üzrə təhlil", premiumLock:"🔒 Bu hissə Premium istifadəçilər və mütəxəssislər üçün əlçatandır.",
+    printBtn:"Çap / PDF", again:"Yeni skrininq", madeBy:"Hazırladı", saved:"Nəticə yadda saxlanıldı.", saveErr:"Saxlama xətası: ",
+    fuSum:"İzləmə: ", fuMuddet:{yeni:"yeni",aylar:"bir neçə ay",coxdan:"çoxdan/doğuşdan"}, fuMuhit:{hamisi:"hər mühitdə",bezi:"bəzi mühitdə"}, fuGer:{beli:"geriləmə var",xeyr:"geriləmə yox"} },
+  ru:{ brandSub:"Скрининг развития v2", logout:"Выход",
+    needLoginT:"Требуется вход", needLoginP:"Войдите в аккаунт для скрининга.", goLogin:"Страница входа",
+    backHome:"‹ В панель", pickT:"Выберите ребёнка", pickP:"Для какого ребёнка заполняется скрининг?", pickEmpty:"Нет доступных детей.",
+    quizT:"Скрининг развития", forChild:c=>"Ребёнок: "+c, disc:"Это предварительный скрининг, не медицинский диагноз. Выберите наиболее подходящий ответ.",
+    disc2:"Внимание: результат — предварительный скрининг, не диагноз. Диагноз ставит только специалист.",
+    next:"Далее", segNo:"Нет", segSome:"Иногда", segYes:"Да",
+    remain:n=>"Пожалуйста, ответьте на все вопросы. Осталось: "+n,
+    fuT:"Несколько дополнительных вопросов", fuP:"Чтобы уточнить результат:", showResult:"Показать результат", fuRemain:"Пожалуйста, ответьте на все вопросы.",
+    resT:"Результат скрининга", score:(t,m)=>"Общий балл: "+t+" / "+m,
+    asagi:"Низкий риск", orta:"Средний риск", yuksek:"Высокий риск",
+    refAsagi:"Результат показывает низкий риск. Продолжайте наблюдать за развитием; при любых сомнениях обратитесь к детскому психологу или специалисту по развитию.",
+    refOrta:"Результат показывает, что некоторые области требуют внимания. Рекомендуется консультация детского психолога или специалиста по развитию.",
+    refYuksek:"Результат показывает значительные сложности в нескольких областях. Как можно скорее обратитесь к детскому психологу или специалисту по развитию.",
+    refReg:" Потеря ранее приобретённого навыка обязательно требует оценки специалистом.",
+    refRecent:" Поскольку трудности недавние и проявляются лишь в части сред, можно понаблюдать и пройти повторную оценку.",
+    premiumT:"Анализ по доменам", premiumLock:"🔒 Доступно для Premium и специалистов.",
+    printBtn:"Печать / PDF", again:"Новый скрининг", madeBy:"Автор", saved:"Результат сохранён.", saveErr:"Ошибка сохранения: ",
+    fuSum:"Наблюдение: ", fuMuddet:{yeni:"недавно",aylar:"несколько месяцев",coxdan:"давно/с рождения"}, fuMuhit:{hamisi:"во всех средах",bezi:"в некоторых средах"}, fuGer:{beli:"есть регресс",xeyr:"нет регресса"} },
+};
+
+let lang="az", currentUid=null, canDetail=false, children=[], selected=null;
+let answers={}, fuAnswers={}, computed=null, saved=false;
+
+const $=id=>document.getElementById(id);
+const esc=s=>String(s||"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c]));
+const t=k=>{const v=T[lang][k];return v;};
+function show(id){["authGate","pick","quiz","followup","result"].forEach(x=>$(x).classList.toggle("hidden",x!==id));}
+function childName(c){return (c.profil&&c.profil.ad)||"—";}
+
+function applyLang(){
+  document.querySelectorAll("[data-i18n]").forEach(el=>{const v=T[lang][el.dataset.i18n];if(typeof v==="string")el.textContent=v;});
+  document.documentElement.lang=lang;
+}
+
+// ── Stage 1 formu ──
+function buildQuiz(){
+  const f=$("qForm"); f.innerHTML="";
+  SABIT_DOMENLER.forEach(dk=>{
+    const g=document.createElement("div"); g.className="dgroup";
+    g.innerHTML=`<h3>${esc(DOMEN_ETIKETLERI[dk][lang])}</h3>`;
+    ITEMS[dk].forEach((it,i)=>{
+      const name=`q_${dk}_${i}`;
+      const cur=answers[`${dk}_${i}`];
+      const opt=(v,lbl)=>`<label><input type="radio" name="${name}" value="${v}"${cur===v?" checked":""}>${esc(lbl)}</label>`;
+      const q=document.createElement("div"); q.className="q";
+      q.innerHTML=`<div class="qt">${esc(it[lang])}</div><div class="seg">${opt(0,t("segNo"))}${opt(1,t("segSome"))}${opt(2,t("segYes"))}</div>`;
+      g.appendChild(q);
+    });
+    f.appendChild(g);
+  });
+  f.querySelectorAll("input[type=radio]").forEach(r=>{
+    r.onchange=()=>{ const[,dk,i]=r.name.split("_"); answers[`${dk}_${i}`]=Number(r.value); };
+  });
+}
+
+function totalItems(){ return SABIT_DOMENLER.reduce((n,dk)=>n+ITEMS[dk].length,0); }
+function answeredCount(){ return Object.keys(answers).length; }
+
+function compute(){
+  const domainScores={}; let total=0;
+  SABIT_DOMENLER.forEach(dk=>{ let s=0; ITEMS[dk].forEach((_,i)=>{ s+=answers[`${dk}_${i}`]||0; }); domainScores[dk]=s; total+=s; });
+  const flagged=SABIT_DOMENLER.filter(dk=>domainScores[dk]>=5);
+  let risk;
+  if(total>=21 || flagged.length>=2) risk="yuksek";
+  else if(total>=9 || flagged.length>=1) risk="orta";
+  else risk="asagi";
+  return {domainScores,total,flagged,risk,max:totalItems()*2};
+}
+
+// ── Stage 2 (izləmə) ──
+function buildFU(){
+  const f=$("fuForm"); f.innerHTML="";
+  FU.forEach(q=>{
+    const name=`fu_${q.key}`;
+    const opts=q.opts.map(o=>`<label><input type="radio" name="${name}" value="${o.v}"${fuAnswers[q.key]===o.v?" checked":""}>${esc(o[lang])}</label>`).join("");
+    const el=document.createElement("div"); el.className="q";
+    el.innerHTML=`<div class="qt">${esc(q[lang])}</div><div class="seg">${opts}</div>`;
+    f.appendChild(el);
+  });
+  f.querySelectorAll("input[type=radio]").forEach(r=>{
+    r.onchange=()=>{ const key=r.name.slice(3); fuAnswers[key]=r.value; };
+  });
+}
+
+// ── Nəticə ──
+function referText(){
+  let s = computed.risk==="yuksek"?t("refYuksek"):computed.risk==="orta"?t("refOrta"):t("refAsagi");
+  if(fuAnswers.gerileme==="beli") s += t("refReg");
+  else if(computed.risk==="orta" && fuAnswers.muddet==="yeni" && fuAnswers.muhit==="bezi") s += t("refRecent");
+  return s;
+}
+
+function renderResult(){
+  $("resFor").textContent=t("forChild")(childName(selected));
+  const band=$("riskBand");
+  band.className="riskband risk-"+computed.risk;
+  $("riskLvl").textContent=t(computed.risk);
+  $("riskSc").textContent=t("score")(computed.total, computed.max);
+  $("referBox").textContent=referText();
+
+  // Domenlər üzrə təhlil — premium/mütəxəssis
+  const p=$("premiumBox");
+  if(canDetail){
+    let html=`<h3>${esc(t("premiumT"))}</h3>`;
+    SABIT_DOMENLER.forEach(dk=>{
+      const sc=computed.domainScores[dk], pct=Math.round(sc/10*100), hi=sc>=5;
+      html+=`<div class="bar"><div class="bl"><span>${esc(DOMEN_ETIKETLERI[dk][lang])}${hi?` <span class="flag">●</span>`:""}</span><span>${sc}/10</span></div><div class="track"><div class="fill${hi?" hi":""}" style="width:${pct}%"></div></div></div>`;
+    });
+    p.innerHTML=html;
+  } else {
+    p.innerHTML=`<h3>${esc(t("premiumT"))}</h3><div class="lock">${esc(t("premiumLock"))}</div>`;
+  }
+
+  // İzləmə xülasəsi
+  if(Object.keys(fuAnswers).length){
+    const parts=[];
+    if(fuAnswers.muddet) parts.push(t("fuMuddet")[fuAnswers.muddet]);
+    if(fuAnswers.muhit) parts.push(t("fuMuhit")[fuAnswers.muhit]);
+    if(fuAnswers.gerileme) parts.push(t("fuGer")[fuAnswers.gerileme]);
+    $("fuSummary").textContent=t("fuSum")+parts.join(" · ");
+    $("fuSummary").classList.remove("hidden");
+  } else { $("fuSummary").classList.add("hidden"); }
+
+  show("result");
+  saveResult();
+}
+
+async function saveResult(){
+  if(saved || !selected) return;
+  saved=true;
+  try{
+    await addSkrininqNeticesi(selected.id, {
+      tool:"AN-Skrininq-v2",
+      bal:computed.total,
+      risk:computed.risk,
+      cavablar:{ domainScores:computed.domainScores, flagged:computed.flagged, max:computed.max, answers, izleme:fuAnswers, dil:lang }
+    });
+  }catch(e){ /* nəticə yenə göstərilir; saxlama icazə/şəbəkə xətası ola bilər */ }
+}
+
+function startQuiz(child){
+  selected=child; answers={}; fuAnswers={}; computed=null; saved=false;
+  $("quizFor").textContent=t("forChild")(childName(child));
+  buildQuiz(); $("quizMsg").innerHTML="";
+  show("quiz"); window.scrollTo(0,0);
+}
+
+function renderPick(){
+  const l=$("pickList"); l.innerHTML="";
+  if(!children.length){ $("pickEmpty").classList.remove("hidden"); return; }
+  $("pickEmpty").classList.add("hidden");
+  children.forEach(c=>{
+    const b=document.createElement("button"); b.className="pickitem"; b.textContent=childName(c);
+    b.onclick=()=>startQuiz(c); l.appendChild(b);
+  });
+}
+
+// ── Hadisələr ──
+document.querySelectorAll(".lang button").forEach(b=>b.onclick=()=>{
+  lang=b.dataset.lang;
+  document.querySelectorAll(".lang button").forEach(x=>x.setAttribute("aria-pressed",x.dataset.lang===lang));
+  applyLang();
+  if(!$("quiz").classList.contains("hidden")){ const f=$("quizFor"); f.textContent=t("forChild")(childName(selected)); buildQuiz(); }
+  if(!$("followup").classList.contains("hidden")) buildFU();
+  if(!$("result").classList.contains("hidden") && computed) renderResult();
+  if(!$("pick").classList.contains("hidden")) renderPick();
+});
+$("logoutBtn").onclick=()=>logout();
+$("quizBack").onclick=()=>{ location.href="./index.html"; };
+$("quizNext").onclick=()=>{
+  if(answeredCount()<totalItems()){ $("quizMsg").innerHTML=`<div class="msg err">${esc(t("remain")(totalItems()-answeredCount()))}</div>`; return; }
+  $("quizMsg").innerHTML="";
+  computed=compute();
+  if(computed.risk==="asagi"){ renderResult(); }
+  else { buildFU(); $("fuMsg").innerHTML=""; show("followup"); window.scrollTo(0,0); }
+};
+$("fuNext").onclick=()=>{
+  if(Object.keys(fuAnswers).length<FU.length){ $("fuMsg").innerHTML=`<div class="msg err">${esc(t("fuRemain"))}</div>`; return; }
+  renderResult(); window.scrollTo(0,0);
+};
+$("printBtn").onclick=()=>window.print();
+$("againBtn").onclick=()=>startQuiz(selected);
+
+function getParam(n){ return new URLSearchParams(location.search).get(n); }
+applyLang();
+
+onUser(async (user, rol)=>{
+  if(!user){ show("authGate"); $("logoutBtn").classList.add("hidden"); return; }
+  currentUid=user.uid; $("logoutBtn").classList.remove("hidden");
+  let tier="pulsuz";
+  try{ const ts=await get(ref(db,"users/"+user.uid+"/tier")); if(ts.exists()) tier=ts.val(); }catch{}
+  canDetail = (tier==="premium" || rol==="admin" || rol==="terapevt" || user.email==="samir.akhundoff@gmail.com");
+  try{ children=await listMyChildren(user.uid); }catch{ children=[]; }
+  const wantChild=getParam("child");
+  const pre=wantChild ? children.find(c=>c.id===wantChild) : null;
+  if(pre) startQuiz(pre); else { show("pick"); renderPick(); }
+});
+</script>
+</body>
+</html>
