@@ -76,6 +76,13 @@
           ".validate": "newData.isString() && (newData.val() === 'nitq' || newData.val() === 'sosial' || newData.val() === 'davranis' || newData.val() === 'ozunexidmet' || newData.val() === 'idrak' || newData.val() === 'boyuk-motorika' || newData.val() === 'ince-motorika')"
         }
       }
+    },
+    "premiumKodlar": {
+      ".read": "auth != null && (auth.token.email === 'samir.akhundoff@gmail.com' || root.child('users').child(auth.uid).child('rol').val() === 'admin')",
+      "$kod": {
+        ".read": "auth != null",
+        ".write": "auth != null && (auth.token.email === 'samir.akhundoff@gmail.com' || root.child('users').child(auth.uid).child('rol').val() === 'admin' || (!data.child('istifadeBy').exists() && newData.child('istifadeBy').val() === auth.uid))"
+      }
     }
   }
 }
