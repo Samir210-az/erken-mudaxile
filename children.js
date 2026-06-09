@@ -94,9 +94,17 @@ export async function listMyChildren(uid) {
   return results.filter(Boolean);
 }
 
+// Admin/terapevt — bütün uşaqlar (qaydalarda children kolleksiyası read admin/terapevt üçün açıqdır).
+export async function listAllChildren() {
+  const snap = await get(ref(db, "children"));
+  if (!snap.exists()) return [];
+  const v = snap.val();
+  return Object.keys(v).map(id => ({ id, ...v[id] }));
+}
+
 // Skrininq nəticəsini karta yaz (Faza 1 → menbe: "skrininq").
 // risk: "asagi" | "orta" | "yuksek"
-export async function addSkrininqNeticesi(childId, { tool, bal, risk, cavablar = null } = {}) {
+export async function addSkrininqNeticesi(childId, { tool, bal, max = null, risk, cavablar = null } = {}) {
   const sRef = push(ref(db, `children/${childId}/skrininqNeticeleri`));
   await set(sRef, {
     tool: tool || "M-CHAT-R/F",
@@ -104,6 +112,7 @@ export async function addSkrininqNeticesi(childId, { tool, bal, risk, cavablar =
     risk,
     menbe: "skrininq",
     tarix: Date.now(),
+    ...(max != null ? { max } : {}),
     ...(cavablar ? { cavablar } : {})
   });
   return sRef.key;
