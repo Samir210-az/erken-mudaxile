@@ -100,7 +100,8 @@
 
   <div class="card hidden" id="kodCard">
     <h1 data-i18n="kodTitle">Premium kodları</h1>
-    <p class="lead" data-i18n="kodLead">Yeni kod yarat və valideynə ver. Hər kod bir dəfə istifadə olunur.</p>
+    <p class="lead" data-i18n="kodLead">Valideyn seçib kod yarat. Kod yalnız həmin valideyndə işləyir və 1 ay etibarlıdır.</p>
+    <select id="kodParent" style="width:100%;box-sizing:border-box;font-family:inherit;font-size:15px;font-weight:700;color:var(--ink);background:var(--card);border:1.5px solid var(--line);border-radius:12px;padding:12px 13px;margin-bottom:10px;"></select>
     <button class="btn" id="kodNewBtn" data-i18n="kodNew">+ Yeni kod yarat</button>
     <div id="kodList" style="margin-top:14px;"></div>
   </div>
@@ -125,7 +126,7 @@ const T = {
     searchPh:"Ad və ya e-poçt üzrə axtar", madeBy:"Hazırladı",
     rolValideyn:"Valideyn", rolTerapevt:"Terapevt", rolAdmin:"Admin",
     reqTher:"terapevt istəyib", saved:"✓ saxlanıldı", err:"xəta", save:"Saxla",
-    kodTitle:"Premium kodları", kodLead:"Yeni kod yarat və valideynə ver. Hər kod bir dəfə istifadə olunur.", kodNew:"+ Yeni kod yarat", kodNone:"Hələ kod yoxdur.", kodUsed:"istifadə olunub", kodFree:"aktiv", kodCopy:"Kopyala", kodCopied:"✓ kopyalandı",
+    kodTitle:"Premium kodları", kodLead:"Valideyn seçib kod yarat. Kod yalnız həmin valideyndə işləyir və 1 ay etibarlıdır.", kodNew:"+ Yeni kod yarat", kodNone:"Hələ kod yoxdur.", kodUsed:"istifadə olunub", kodFree:"aktiv", kodExpired:"vaxtı bitib", kodExpiry:"bitir", kodPickParent:"Valideyn seçin", kodNeedParent:"Əvvəlcə valideyn seçin.", kodCopy:"Kopyala", kodCopied:"✓ kopyalandı",
     cntN:n=>`${n} istifadəçi`, empty:"İstifadəçi tapılmadı.", noPhone:"telefon yoxdur" },
   ru:{ brandSub:"Пользователи", logout:"Выход",
     needLoginT:"Требуется вход", needLoginP:"Войдите в аккаунт для этой страницы.", goLogin:"Страница входа",
@@ -134,7 +135,7 @@ const T = {
     searchPh:"Поиск по имени или эл. почте", madeBy:"Автор",
     rolValideyn:"Родитель", rolTerapevt:"Терапевт", rolAdmin:"Администратор",
     reqTher:"запросил терапевта", saved:"✓ сохранено", err:"ошибка", save:"Сохранить",
-    kodTitle:"Премиум-коды", kodLead:"Создайте код и передайте родителю. Каждый код используется один раз.", kodNew:"+ Создать код", kodNone:"Кодов пока нет.", kodUsed:"использован", kodFree:"активен", kodCopy:"Копировать", kodCopied:"✓ скопировано",
+    kodTitle:"Премиум-коды", kodLead:"Выберите родителя и создайте код. Код работает только у этого родителя и действителен 1 месяц.", kodNew:"+ Создать код", kodNone:"Кодов пока нет.", kodUsed:"использован", kodFree:"активен", kodExpired:"истёк", kodExpiry:"истекает", kodPickParent:"Выберите родителя", kodNeedParent:"Сначала выберите родителя.", kodCopy:"Копировать", kodCopied:"✓ скопировано",
     cntN:n=>`${n} пользователей`, empty:"Пользователи не найдены.", noPhone:"нет телефона" },
 };
 
@@ -223,7 +224,7 @@ async function load(){
 document.querySelectorAll(".lang button").forEach(b=>b.onclick=()=>{
   lang=b.dataset.lang;
   document.querySelectorAll(".lang button").forEach(x=>x.setAttribute("aria-pressed",x.dataset.lang===lang));
-  applyI18n(); render(); renderKodlar();
+  applyI18n(); render(); renderKodlar(); fillParents();
 });
 $("logoutBtn").onclick=()=>logout();
 $("search").oninput=e=>{ filter=e.target.value; render(); };
@@ -232,15 +233,29 @@ applyI18n();
 
 // ---- Premium kodları ----
 function genKod(){ const c="ABCDEFGHJKLMNPQRSTUVWXYZ23456789"; let s=""; for(let i=0;i<10;i++) s+=c[Math.floor(Math.random()*c.length)]; return s; }
+function fmtD(ms){ try{ return new Date(ms).toLocaleDateString(lang==="ru"?"ru-RU":"az-AZ"); }catch{ return ""; } }
 let kodlar=[];
+function parents(){ return users.filter(u=>!u.rol || u.rol==="valideyn"); }
+function fillParents(){
+  const sel=$("kodParent"); if(!sel) return;
+  const cur=sel.value;
+  sel.innerHTML=`<option value="">${esc(t("kodPickParent"))}</option>`+parents().map(u=>`<option value="${esc(u.uid)}">${esc(u.ad||u.email||u.uid)}</option>`).join("");
+  if(cur) sel.value=cur;
+}
+function kodStatus(k){
+  if(k.istifadeBy) return {key:"kodUsed",col:"var(--muted)",active:false};
+  if(k.bitmeTarixi && Date.now()>k.bitmeTarixi) return {key:"kodExpired",col:"var(--danger)",active:false};
+  return {key:"kodFree",col:"var(--brand-dark)",active:true};
+}
 function renderKodlar(){
   const wrap=$("kodList"); wrap.innerHTML="";
   if(!kodlar.length){ wrap.innerHTML=`<div class="empty">${esc(t("kodNone"))}</div>`; return; }
   kodlar.sort((a,b)=>(b.yaradilma||0)-(a.yaradilma||0));
   kodlar.forEach(k=>{
-    const used=!!k.istifadeBy;
+    const st=kodStatus(k);
+    const exp=k.bitmeTarixi?` · ${esc(t("kodExpiry"))}: ${esc(fmtD(k.bitmeTarixi))}`:"";
     const el=document.createElement("div"); el.className="urow";
-    el.innerHTML=`<div style="flex:1;min-width:0;"><div style="font-weight:800;font-size:16px;letter-spacing:1px;font-family:ui-monospace,monospace;">${esc(k.kod)}</div><div style="font-size:12px;font-weight:700;margin-top:2px;color:${used?"var(--muted)":"var(--brand-dark)"};">${used?esc(t("kodUsed")):esc(t("kodFree"))}</div></div>${used?"":`<button class="savebtn" data-copy="${esc(k.kod)}">${esc(t("kodCopy"))}</button>`}`;
+    el.innerHTML=`<div style="flex:1;min-width:0;"><div style="font-weight:800;font-size:16px;letter-spacing:1px;font-family:ui-monospace,monospace;">${esc(k.kod)}</div><div style="font-size:12px;font-weight:700;margin-top:2px;color:var(--muted);">${esc(k.valideynAd||"—")}</div><div style="font-size:12px;font-weight:700;margin-top:2px;color:${st.col};">${esc(t(st.key))}${st.active?exp:""}</div></div>${st.active?`<button class="savebtn" data-copy="${esc(k.kod)}">${esc(t("kodCopy"))}</button>`:""}`;
     wrap.appendChild(el);
   });
   wrap.querySelectorAll("button[data-copy]").forEach(b=>b.onclick=async()=>{
@@ -253,9 +268,14 @@ async function loadKodlar(){
   renderKodlar();
 }
 $("kodNewBtn").onclick=async()=>{
-  const kod=genKod();
-  try{ await update(ref(db),{["premiumKodlar/"+kod]:{yaradilma:Date.now(),istifadeBy:null}}); await loadKodlar(); }
-  catch(e){ alert(t("err")+": "+e.message); }
+  const sel=$("kodParent"); const uid=sel?sel.value:"";
+  if(!uid){ alert(t("kodNeedParent")); return; }
+  const p=parents().find(u=>u.uid===uid)||{};
+  const kod=genKod(); const now=Date.now();
+  try{
+    await update(ref(db),{["premiumKodlar/"+kod]:{yaradilma:now, bitmeTarixi:now+30*24*60*60*1000, valideynUid:uid, valideynAd:(p.ad||p.email||uid), istifadeBy:null}});
+    await loadKodlar();
+  }catch(e){ alert(t("err")+": "+e.message); }
 };
 
 onUser(async (user, rol)=>{
@@ -266,7 +286,7 @@ onUser(async (user, rol)=>{
   if(!isAdmin){ showCard("denied"); return; }
   showCard("app");
   $("kodCard").classList.remove("hidden");
-  try{ await load(); await loadKodlar(); }
+  try{ await load(); fillParents(); await loadKodlar(); }
   catch(e){ $("list").innerHTML=`<div class="empty">${esc(t("err"))}: ${esc(e.message)}</div>`; }
 });
 </script>
