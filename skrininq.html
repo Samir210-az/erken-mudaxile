@@ -342,6 +342,19 @@ document.getElementById("logoutBtn").onclick=()=>logout();
 
 function getParam(n){ return new URLSearchParams(location.search).get(n); }
 
+async function openSaved(child, resId){
+  selected=child;
+  try{
+    const s=await get(ref(db,"children/"+child.id+"/skrininqNeticeleri/"+resId));
+    if(!s.exists()){ show("pick"); renderPick(); return; }
+    const r=s.val();
+    answers = r.cavablar || {};
+    const {total,dom}=scoreIt();
+    lastResult={total,dom,risk:r.risk||triage(total),date:r.tarix||Date.now()};
+    show("result"); renderResult();
+  }catch(e){ show("pick"); renderPick(); }
+}
+
 onUser(async (user, rol)=>{
   if(!user){ show("authGate"); document.getElementById("logoutBtn").classList.add("hidden"); return; }
   currentUid=user.uid; isAdmin=(rol==="admin");
@@ -352,6 +365,8 @@ onUser(async (user, rol)=>{
   const wantChild=getParam("child");
   let pre = wantChild ? (children.find(c=>c.id===wantChild)||null) : null;
   if(!pre && wantChild){ try{ pre=await getChild(wantChild); }catch{ pre=null; } }
+  const wantView=getParam("view");
+  if(pre && wantView){ openSaved(pre, wantView); return; }
   if(pre){ startQuiz(pre); } else { show("pick"); renderPick(); }
 });
 
