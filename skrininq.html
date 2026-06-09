@@ -88,6 +88,9 @@
   .premium .rep-c{color:var(--muted);font-weight:700;font-size:12px;}
   .premium .rep-ok{color:var(--ink);font-weight:600;font-size:14px;line-height:1.5;margin:4px 0 0;}
   .premium .rep-p{color:var(--ink);font-weight:600;font-size:13.5px;line-height:1.55;margin:4px 0 0;}
+  .howto{background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin:0 0 12px;}
+  .howto summary{cursor:pointer;font-weight:800;color:var(--brand-dark);font-size:14px;}
+  .howto p{margin:8px 0 0;font-size:13px;line-height:1.55;color:var(--ink);font-weight:600;}
 </style>
 </head>
 <body>
@@ -112,6 +115,11 @@
   <div class="card hidden" id="pickView">
     <h1 data-i18n="pickT">Hansı uşaq üçün?</h1>
     <p class="lead" data-i18n="pickP">Skrininq nəticəsi seçilmiş uşağın kartına yazılacaq.</p>
+    <details class="howto">
+      <summary data-i18n="htT">Skrininq nədir? Necə keçirilir?</summary>
+      <p data-i18n="htWhat">—</p>
+      <p data-i18n="htHow">—</p>
+    </details>
     <div id="pickList"></div>
     <p class="lead hidden" id="pickEmpty" data-i18n="pickEmpty">Əvvəlcə valideyn panelində uşaq əlavə edin.</p>
     <a class="btn secondary" href="./index.html" style="display:block;text-decoration:none;text-align:center;margin-top:6px;" data-i18n="toPanel">Panelə qayıt</a>
@@ -187,7 +195,7 @@ const QUESTIONS = [
 ];
 
 const UI = {
-  az:{ brandSub:"İnkişaf Skrininqi", needLoginT:"Giriş tələb olunur", needLoginP:"Skrininqi başlatmaq üçün hesabınıza daxil olun.",
+  az:{ brandSub:"İnkişaf Skrininqi", htT:"Skrininq nədir? Necə keçirilir?", htWhat:"Skrininq — uşağın inkişafını qısa suallarla ilkin yoxlamadır. Bu, diaqnoz deyil; yalnız diqqət tələb edən sahələri aşkarlayıb mütəxəssisə yönləndirməyə kömək edir.", htHow:"Necə keçirilir: uşaq sakit və dincəlmiş olsun; hər bənddə son 1–2 ayda müşahidə etdiyiniz davranışa görə ən uyğun cavabı seçin; dürüst cavablandırın — adi günə görə ('ən yaxşı' günə görə yox). Cavablandıran valideyn və ya mütəxəssis ola bilər.", needLoginT:"Giriş tələb olunur", needLoginP:"Skrininqi başlatmaq üçün hesabınıza daxil olun.",
     goLogin:"Giriş səhifəsi", pickT:"Hansı uşaq üçün?", pickP:"Skrininq nəticəsi seçilmiş uşağın kartına yazılacaq.",
     pickEmpty:"Əvvəlcə valideyn panelində uşaq əlavə edin.", toPanel:"Panelə qayıt", yes:"Bəli", no:"Xeyr", back:"‹ Əvvəlki sual",
     again:"Yenidən başlat", printPdf:"HTML / PDF kimi çıxar", logout:"Çıxış", madeBy:"Hazırladı",
@@ -207,7 +215,7 @@ const UI = {
     saved:"Nəticə uşağın kartına yazıldı.", saveErr:"Nəticə saxlanmadı",
     reportFor:"Hesabat:", reportDate:"Tarix:",
     domSosial:"Sosial / ünsiyyət", domKommunikasiya:"Kommunikasiya", domOyun:"Oyun / təqlid", domDavranis:"Davranış / sensor", domEmosional:"Emosional", domMotor:"Motorika", domOzunexidmet:"Özünəxidmət", domIdrak:"İdrak / koqnitiv" },
-  ru:{ brandSub:"Скрининг развития", needLoginT:"Требуется вход", needLoginP:"Войдите в аккаунт, чтобы начать скрининг.",
+  ru:{ brandSub:"Скрининг развития", htT:"Что такое скрининг? Как проводить?", htWhat:"Скрининг — это краткая первичная проверка развития ребёнка с помощью вопросов. Это не диагноз; он лишь помогает выявить области, требующие внимания, и направить к специалисту.", htHow:"Как проводить: ребёнок должен быть спокоен и отдохнувшим; в каждом пункте выбирайте ответ по поведению за последние 1–2 месяца; отвечайте честно — по обычному дню (не по «лучшему»). Заполнять может родитель или специалист.", needLoginT:"Требуется вход", needLoginP:"Войдите в аккаунт, чтобы начать скрининг.",
     goLogin:"Страница входа", pickT:"Для какого ребёнка?", pickP:"Результат будет сохранён в карте выбранного ребёнка.",
     pickEmpty:"Сначала добавьте ребёнка в панели родителя.", toPanel:"В панель", yes:"Да", no:"Нет", back:"‹ Предыдущий вопрос",
     again:"Начать заново", printPdf:"Сохранить как HTML / PDF", logout:"Выход", madeBy:"Автор",
