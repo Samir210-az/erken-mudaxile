@@ -29,7 +29,7 @@
   .lead{color:var(--muted);font-weight:600;font-size:14.5px;margin:0 0 16px;}
   .btn{width:100%;border:0;font-family:inherit;font-weight:800;font-size:16px;color:#fff;background:var(--brand);padding:15px;border-radius:14px;cursor:pointer;transition:transform .08s;}
   .btn:active{transform:scale(.985);}
-  .btn.secondary{background:var(--card);color:var(--brand-dark);border:1.5px solid var(--line);}
+  .btn.secondary{background:var(--card);color:var(--accent);border:1.5px solid var(--line);}
   .btn:disabled{opacity:.55;}
   .center{text-align:center;}
   .hidden{display:none !important;}
@@ -45,7 +45,7 @@
   .ans{display:flex;gap:10px;}
   .ans button{flex:1;border:1.5px solid var(--line);background:var(--card);color:var(--accent);font-family:inherit;font-weight:800;font-size:16px;padding:16px;border-radius:14px;cursor:pointer;transition:.12s;}
   .ans button:active{background:var(--brand-soft);border-color:var(--brand);}
-  .back{margin-top:16px;background:none;border:0;color:var(--muted);font-family:inherit;font-weight:700;font-size:13px;cursor:pointer;}
+  .back{margin-top:16px;background:none;border:0;color:var(--accent);font-family:inherit;font-weight:700;font-size:13px;cursor:pointer;}
   .rep-head{display:none;}
   .risk{border-radius:16px;padding:16px;text-align:center;margin-bottom:14px;}
   .risk h2{margin:0 0 4px;font-size:24px;}
@@ -142,7 +142,7 @@
 
 <script type="module">
 import { onUser, logout } from "./auth.js";
-import { listMyChildren, addSkrininqNeticesi } from "./children.js";
+import { listMyChildren, listAllChildren, getChild, addSkrininqNeticesi } from "./children.js";
 import { db } from "./firebase-init.js";
 import { ref, get } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-database.js";
 
@@ -322,9 +322,11 @@ onUser(async (user, rol)=>{
   currentUid=user.uid; isAdmin=(rol==="admin");
   document.getElementById("logoutBtn").classList.remove("hidden");
   try{ const ts=await get(ref(db,"users/"+user.uid+"/tier")); currentTier=ts.exists()?ts.val():"pulsuz"; }catch{ currentTier="pulsuz"; }
-  try{ children=await listMyChildren(user.uid); }catch{ children=[]; }
+  const staff=(rol==="admin"||rol==="terapevt");
+  try{ children = staff ? await listAllChildren() : await listMyChildren(user.uid); }catch{ children=[]; }
   const wantChild=getParam("child");
-  const pre=wantChild ? children.find(c=>c.id===wantChild) : null;
+  let pre = wantChild ? (children.find(c=>c.id===wantChild)||null) : null;
+  if(!pre && wantChild){ try{ pre=await getChild(wantChild); }catch{ pre=null; } }
   if(pre){ startQuiz(pre); } else { show("pick"); renderPick(); }
 });
 
