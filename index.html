@@ -244,7 +244,7 @@ const I18N = {
     consentText:"Bu məlumatlar yalnız övladınızın inkişafını izləmək üçündür. Təhlükəsiz saxlanılır və yalnız siz, təyin olunmuş terapevt və mərkəz admini görə bilər. Razılığı istənilən vaxt geri götürə bilərsiniz.",
     consentAgree:"Razılıq verirəm", childName:"Uşağın adı", birthDate:"Doğum tarixi", gender:"Cins", genderPick:"Seçin", boy:"Oğlan", girl:"Qız",
     cancel:"Ləğv et", create:"Yarat", close:"Bağla", startScreening:"Skrininq et", startScreeningV2:"İnkişaf skrininqi (v2)",
-    histTitle:"Skrininq tarixçəsi", noScreening:"Hələ skrininq yoxdur.", deleteChild:"Uşağı sil", confirmDeleteChild:"Bu uşağı və bütün skrininqlərini silmək istəyirsiniz? Bu geri qaytarıla bilməz.", delErr:"Silinmə alınmadı.",
+    histTitle:"Skrininq tarixçəsi", noScreening:"Hələ skrininq yoxdur.", deleteChild:"Uşağı sil", confirmDeleteChild:"Bu uşağı və bütün skrininqlərini silmək istəyirsiniz? Bu geri qaytarıla bilməz.", delErr:"Silinmə alınmadı.", openReport:"Hesabatı aç",
     needConsent:"Davam etmək üçün razılıq verin.", needName:"Uşağın adını yazın.", creating:"Yaradılır…",
     eFill:"E-poçt və parolu doldurun.", ePhone:"Düzgün nömrə daxil edin (+994…).", eCode:"Kodu daxil edin.",
     working:"Gözləyin…", codeSent:"Kod göndərildi.", eGeneric:"Xəta baş verdi. Yenidən cəhd edin.",
@@ -264,7 +264,7 @@ const I18N = {
     consentText:"Эти данные используются только для отслеживания развития вашего ребёнка. Хранятся безопасно и доступны только вам, назначенному терапевту и администратору центра. Согласие можно отозвать в любое время.",
     consentAgree:"Я даю согласие", childName:"Имя ребёнка", birthDate:"Дата рождения", gender:"Пол", genderPick:"Выберите", boy:"Мальчик", girl:"Девочка",
     cancel:"Отмена", create:"Создать", close:"Закрыть", startScreening:"Пройти скрининг", startScreeningV2:"Скрининг развития (v2)",
-    histTitle:"История скрининга", noScreening:"Скрининга ещё нет.", deleteChild:"Удалить ребёнка", confirmDeleteChild:"Удалить этого ребёнка и все его скрининги? Это нельзя отменить.", delErr:"Не удалось удалить.",
+    histTitle:"История скрининга", noScreening:"Скрининга ещё нет.", deleteChild:"Удалить ребёнка", confirmDeleteChild:"Удалить этого ребёнка и все его скрининги? Это нельзя отменить.", delErr:"Не удалось удалить.", openReport:"Открыть отчёт",
     needConsent:"Дайте согласие, чтобы продолжить.", needName:"Введите имя ребёнка.", creating:"Создаётся…",
     eFill:"Заполните почту и пароль.", ePhone:"Введите корректный номер (+994…).", eCode:"Введите код.",
     working:"Подождите…", codeSent:"Код отправлен.", eGeneric:"Произошла ошибка. Попробуйте снова.",
@@ -362,15 +362,17 @@ function openDetail(c){
   document.getElementById("dGender").textContent=genderLabel(c.profil?.cins);
   const hist=document.getElementById("dHist"),he=document.getElementById("dHistEmpty");
   hist.innerHTML="";
-  const arr=c.skrininqNeticeleri?Object.values(c.skrininqNeticeleri).sort((x,y)=>(y.tarix||0)-(x.tarix||0)):[];
-  if(!arr.length){ he.classList.remove("hidden"); }
+  const entries=c.skrininqNeticeleri?Object.entries(c.skrininqNeticeleri).sort((x,y)=>(y[1].tarix||0)-(x[1].tarix||0)):[];
+  if(!entries.length){ he.classList.remove("hidden"); }
   else{
     he.classList.add("hidden");
-    arr.forEach(s=>{
-      const row=document.createElement("div"); row.className="hist-item";
+    entries.forEach(([rid,s])=>{
+      const row=document.createElement("div"); row.className="hist-item"; row.style.cursor="pointer"; row.title=t("openReport");
       const left=document.createElement("span"); left.textContent=fmtDate(s.tarix)+" · "+(s.tool?(s.tool.indexOf("v2")>=0?"v2 · ":"v1 · "):"")+s.bal+(s.max?("/"+s.max):"");
       const pill=document.createElement("span"); pill.className="pill "+(riskCls[s.risk]||""); pill.textContent=t(riskKey[s.risk]||"");
-      row.appendChild(left); row.appendChild(pill); hist.appendChild(row);
+      row.appendChild(left); row.appendChild(pill);
+      row.onclick=()=>{ const page=(s.tool&&s.tool.indexOf("v2")>=0)?"skrininq-v2.html":"skrininq.html"; location.href="./"+page+"?child="+encodeURIComponent(c.id)+"&view="+encodeURIComponent(rid); };
+      hist.appendChild(row);
     });
   }
   document.getElementById("dDelete").classList.toggle("hidden", currentRol!=="admin");
