@@ -125,7 +125,7 @@ const T = {
     backHome:"‹ Panelə qayıt", title:"İstifadəçilər", lead:"Rolları idarə et. Terapevt rolunu yalnız sən verə bilərsən.",
     searchPh:"Ad və ya e-poçt üzrə axtar", madeBy:"Hazırladı",
     rolValideyn:"Valideyn", rolTerapevt:"Terapevt", rolAdmin:"Admin",
-    reqTher:"terapevt istəyib", saved:"✓ saxlanıldı", err:"xəta", save:"Saxla",
+    reqTher:"terapevt istəyib", saved:"✓ saxlanıldı", err:"xəta", save:"Saxla", del:"Sil", confirmDelUser:"Bu istifadəçini silmək istəyirsiniz? Onların rolu və profili silinəcək.", selfDel:"Öz hesabınızı silə bilməzsiniz.",
     kodTitle:"Premium kodları", kodLead:"Valideyn seçib kod yarat. Kod yalnız həmin valideyndə işləyir və 1 ay etibarlıdır.", kodNew:"+ Yeni kod yarat", kodNone:"Hələ kod yoxdur.", kodUsed:"istifadə olunub", kodFree:"aktiv", kodExpired:"vaxtı bitib", kodExpiry:"bitir", kodPickParent:"Valideyn seçin", kodNeedParent:"Əvvəlcə valideyn seçin.", kodCopy:"Kopyala", kodCopied:"✓ kopyalandı",
     cntN:n=>`${n} istifadəçi`, empty:"İstifadəçi tapılmadı.", noPhone:"telefon yoxdur" },
   ru:{ brandSub:"Пользователи", logout:"Выход",
@@ -134,12 +134,12 @@ const T = {
     backHome:"‹ В панель", title:"Пользователи", lead:"Управление ролями. Роль терапевта назначаете только вы.",
     searchPh:"Поиск по имени или эл. почте", madeBy:"Автор",
     rolValideyn:"Родитель", rolTerapevt:"Терапевт", rolAdmin:"Администратор",
-    reqTher:"запросил терапевта", saved:"✓ сохранено", err:"ошибка", save:"Сохранить",
+    reqTher:"запросил терапевта", saved:"✓ сохранено", err:"ошибка", save:"Сохранить", del:"Удалить", confirmDelUser:"Удалить этого пользователя? Его роль и профиль будут удалены.", selfDel:"Нельзя удалить свой аккаунт.",
     kodTitle:"Премиум-коды", kodLead:"Выберите родителя и создайте код. Код работает только у этого родителя и действителен 1 месяц.", kodNew:"+ Создать код", kodNone:"Кодов пока нет.", kodUsed:"использован", kodFree:"активен", kodExpired:"истёк", kodExpiry:"истекает", kodPickParent:"Выберите родителя", kodNeedParent:"Сначала выберите родителя.", kodCopy:"Копировать", kodCopied:"✓ скопировано",
     cntN:n=>`${n} пользователей`, empty:"Пользователи не найдены.", noPhone:"нет телефона" },
 };
 
-let lang="az", users=[], filter="";
+let lang="az", users=[], filter="", meUid=null;
 const $=id=>document.getElementById(id);
 const esc=s=>String(s||"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c]));
 const t=k=>{const v=T[lang][k];return typeof v==="function"?v:(v??k);};
@@ -186,6 +186,7 @@ function render(){
           <option value="admin"${u.rol==="admin"?" selected":""}>${esc(t("rolAdmin"))}</option>
         </select>
         <button class="savebtn" data-save="${esc(u.uid)}">${esc(t("save"))}</button>
+        <button class="savebtn" data-del="${esc(u.uid)}" style="background:var(--danger);">${esc(t("del"))}</button>
         <span class="rowmsg" data-msg="${esc(u.uid)}"></span>
       </div>`;
     wrap.appendChild(el);
@@ -195,6 +196,15 @@ function render(){
       const uid=btn.dataset.save;
       const sel=wrap.querySelector(`select[data-uid="${CSS.escape(uid)}"]`);
       setRole(uid, sel.value);
+    };
+  });
+  wrap.querySelectorAll("button[data-del]").forEach(btn=>{
+    btn.onclick=async()=>{
+      const uid=btn.dataset.del;
+      if(uid===meUid){ alert(t("selfDel")); return; }
+      if(!confirm(t("confirmDelUser"))) return;
+      try{ await update(ref(db),{["users/"+uid]:null}); await load(); fillParents(); }
+      catch(e){ alert(t("err")+": "+(e&&e.message?e.message:"")); }
     };
   });
 }
@@ -279,6 +289,7 @@ $("kodNewBtn").onclick=async()=>{
 };
 
 onUser(async (user, rol)=>{
+  meUid = user ? user.uid : null;
   $("kodCard").classList.add("hidden");
   if(!user){ showCard("authGate"); $("logoutBtn").classList.add("hidden"); return; }
   $("logoutBtn").classList.remove("hidden");
