@@ -277,7 +277,7 @@ async function finish(){
   lastResult={total,dom,risk,date:Date.now()};
   show("result"); renderResult();
   try{
-    await addSkrininqNeticesi(selected.id,{tool:"AN-Skrininq-v1",bal:total,risk,cavablar:answers});
+    await addSkrininqNeticesi(selected.id,{tool:"AN-Skrininq-v1",bal:total,max:QUESTIONS.length,risk,cavablar:answers});
     const sm=document.getElementById("saveMsg"); sm.style.display="block"; sm.style.background="var(--brand-soft)"; sm.style.color="var(--brand-dark)"; sm.textContent=t("saved");
   }catch(e){ const sm=document.getElementById("saveMsg"); sm.style.display="block"; sm.style.background="var(--danger-soft)"; sm.style.color="var(--danger)"; sm.textContent=t("saveErr")+" ("+(e?.code||e?.message||"")+")"; }
 }
