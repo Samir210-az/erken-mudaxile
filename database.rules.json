@@ -36,6 +36,7 @@
       }
     },
     "children": {
+      ".read": "auth != null && (auth.token.email === 'samir.akhundoff@gmail.com' || root.child('users').child(auth.uid).child('rol').val() === 'admin' || root.child('users').child(auth.uid).child('rol').val() === 'terapevt')",
       "$childId": {
         ".read": "auth != null && ( auth.token.email === 'samir.akhundoff@gmail.com' || root.child('users').child(auth.uid).child('rol').val() === 'admin' || data.child('parentIds').child(auth.uid).exists() || data.child('therapistIds').child(auth.uid).exists() )",
         ".write": "auth != null && ( auth.token.email === 'samir.akhundoff@gmail.com' || root.child('users').child(auth.uid).child('rol').val() === 'admin' || data.child('therapistIds').child(auth.uid).exists() || data.child('parentIds').child(auth.uid).exists() || ( !data.exists() && newData.child('parentIds').child(auth.uid).exists() ) )",
