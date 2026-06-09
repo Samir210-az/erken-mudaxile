@@ -393,6 +393,7 @@ async function saveResult(){
     await addSkrininqNeticesi(selected.id, {
       tool:"AN-Skrininq-v2",
       bal:computed.total,
+      max:computed.max,
       risk:computed.risk,
       cavablar:{ domainScores:computed.domainScores, flagged:computed.flagged, max:computed.max, answers, izleme:fuAnswers, dil:lang }
     });
