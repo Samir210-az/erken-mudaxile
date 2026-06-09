@@ -492,6 +492,19 @@ $("againBtn").onclick=()=>startQuiz(selected);
 function getParam(n){ return new URLSearchParams(location.search).get(n); }
 applyLang();
 
+async function openSaved(child, resId){
+  selected=child; saved=true;
+  try{
+    const s=await get(ref(db,"children/"+child.id+"/skrininqNeticeleri/"+resId));
+    if(!s.exists()){ show("pick"); renderPick(); return; }
+    const c=(s.val().cavablar)||{};
+    answers = c.answers || {};
+    fuAnswers = c.izleme || {};
+    computed = compute();
+    renderResult();
+  }catch(e){ show("pick"); renderPick(); }
+}
+
 onUser(async (user, rol)=>{
   if(!user){ show("authGate"); $("logoutBtn").classList.add("hidden"); return; }
   currentUid=user.uid; $("logoutBtn").classList.remove("hidden");
@@ -504,6 +517,8 @@ onUser(async (user, rol)=>{
   const wantChild=getParam("child");
   let pre = wantChild ? (children.find(c=>c.id===wantChild)||null) : null;
   if(!pre && wantChild){ try{ pre=await getChild(wantChild); }catch{ pre=null; } }
+  const wantView=getParam("view");
+  if(pre && wantView){ openSaved(pre, wantView); return; }
   if(pre) startQuiz(pre); else { show("pick"); renderPick(); }
 });
 </script>
