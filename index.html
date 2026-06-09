@@ -156,7 +156,7 @@
     </div>
     <div class="dash" id="parentDash">
       <div class="dash-head">
-        <h3 data-i18n="myChildren">Övladlarım</h3>
+        <h3 id="childTitle">Övladlarım</h3>
         <button class="btn-add" id="addChild" data-i18n="addChild">+ Uşaq əlavə et</button>
       </div>
       <div id="childList" class="child-list"></div>
@@ -219,7 +219,7 @@
 
 <script type="module">
 import { registerWithEmail, loginWithEmail, setupRecaptcha, sendPhoneCode, confirmPhoneCode, logout, onUser } from "./auth.js";
-import { createChild, listMyChildren } from "./children.js";
+import { createChild, listMyChildren, listAllChildren } from "./children.js";
 import { db } from "./firebase-init.js";
 import { ref, get, update } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-database.js";
 
@@ -231,7 +231,7 @@ const I18N = {
     rolValideyn:"Valideyn", rolTerapevt:"Terapevt", rolAdmin:"Admin",
     centerTools:"Mərkəz alətləri", toolGoals:"Məqsəd Kitabxanası", toolUsers:"İstifadəçilər",
     therReg:"Mütəxəssis (terapevt) kimi qeydiyyat — admin təsdiqləyir",
-    myChildren:"Övladlarım", addChild:"+ Uşaq əlavə et", noChildren:"Hələ uşaq əlavə etməmisiniz.",
+    myChildren:"Övladlarım", allChildren:"Bütün uşaqlar", addChild:"+ Uşaq əlavə et", noChildren:"Hələ uşaq əlavə etməmisiniz.",
     newChild:"Yeni uşaq-kartı",
     premiumTitle:"Premium", premiumDesc:"Premium ilə skrininq nəticələrində sahələr üzrə ətraflı analiz açılır.",
     premiumActiveLbl:"✓ Premium aktivdir", premiumFreeLbl:"Cari plan: Pulsuz", premiumActivate:"Aktivləşdir", premiumPh:"Aktivasiya kodu",
@@ -251,7 +251,7 @@ const I18N = {
     rolValideyn:"Родитель", rolTerapevt:"Терапевт", rolAdmin:"Администратор",
     centerTools:"Инструменты центра", toolGoals:"Библиотека целей", toolUsers:"Пользователи",
     therReg:"Регистрация как специалист (терапевт) — подтверждает админ",
-    myChildren:"Мои дети", addChild:"+ Добавить", noChildren:"Вы ещё не добавили ребёнка.",
+    myChildren:"Мои дети", allChildren:"Все дети", addChild:"+ Добавить", noChildren:"Вы ещё не добавили ребёнка.",
     newChild:"Новая карта ребёнка",
     premiumTitle:"Премиум", premiumDesc:"С Премиумом в результатах скрининга открывается подробный анализ по областям.",
     premiumActiveLbl:"✓ Премиум активен", premiumFreeLbl:"Текущий план: Бесплатный", premiumActivate:"Активировать", premiumPh:"Код активации",
@@ -331,7 +331,7 @@ function renderChildren(list){
   list.forEach(c=>{
     const ad=c.profil?.ad||"—"; let sub=fmtDate(c.profil?.dogumTarixi);
     const s=latestSkrininq(c);
-    if(s){ sub+=(sub?" · ":"")+t(riskKey[s.risk]||"")+" ("+s.bal+"/20)"; }
+    if(s){ const mx=s.max?("/"+s.max):""; const tag=s.tool?(s.tool.indexOf("v2")>=0?" · v2":" · v1"):""; sub+=(sub?" · ":"")+t(riskKey[s.risk]||"")+" ("+s.bal+mx+")"+tag; }
     const item=document.createElement("button");
     item.className="child-item";
     item.innerHTML='<span class="ci-ava">'+((ad[0]||"?").toUpperCase())+'</span><span class="ci-info"><span class="ci-name"></span><span class="ci-sub"></span></span><span class="ci-chev">&rsaquo;</span>';
@@ -341,7 +341,11 @@ function renderChildren(list){
     childList.appendChild(item);
   });
 }
-async function loadChildren(){ try{ renderChildren(await listMyChildren(currentUid)); }catch(e){ console.error(e); } }
+async function loadChildren(){
+  const staff=(currentRol==="admin"||currentRol==="terapevt");
+  const tt=document.getElementById("childTitle"); if(tt) tt.textContent = staff?t("allChildren"):t("myChildren");
+  try{ renderChildren(await (staff?listAllChildren():listMyChildren(currentUid))); }catch(e){ console.error(e); }
+}
 
 const detailModal=document.getElementById("detailModal");
 let detailChild=null;
@@ -359,7 +363,7 @@ function openDetail(c){
     he.classList.add("hidden");
     arr.forEach(s=>{
       const row=document.createElement("div"); row.className="hist-item";
-      const left=document.createElement("span"); left.textContent=fmtDate(s.tarix)+" · "+s.bal+"/20";
+      const left=document.createElement("span"); left.textContent=fmtDate(s.tarix)+" · "+(s.tool?(s.tool.indexOf("v2")>=0?"v2 · ":"v1 · "):"")+s.bal+(s.max?("/"+s.max):"");
       const pill=document.createElement("span"); pill.className="pill "+(riskCls[s.risk]||""); pill.textContent=t(riskKey[s.risk]||"");
       row.appendChild(left); row.appendChild(pill); hist.appendChild(row);
     });
@@ -443,7 +447,7 @@ onUser((user, rol)=>{
     const isAdmin=currentRol==="admin", isTher=currentRol==="terapevt";
     document.getElementById("centerTools").classList.toggle("hidden", !(isAdmin||isTher));
     document.getElementById("toolUsersLink").classList.toggle("hidden", !isAdmin);
-    document.getElementById("parentDash").classList.toggle("hidden", isAdmin);
+    document.getElementById("parentDash").classList.remove("hidden");
     addChildBtn.classList.toggle("hidden", isTher||isAdmin);
     const showPrem=!(isAdmin||isTher);
     premiumCard.classList.toggle("hidden", !showPrem);
