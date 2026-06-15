@@ -103,6 +103,15 @@
   .dash-head h3{color:var(--accent);}
   @media(min-width:768px){.child-list{display:grid;grid-template-columns:1fr 1fr;gap:10px;}}
 </style>
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#0e5c49">
+    <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', function() {
+          navigator.serviceWorker.register('/erken-mudaxile/service-worker.js');
+        });
+      }
+    </script>
 </head>
 <body>
 <div class="wrap">
