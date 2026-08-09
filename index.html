@@ -307,8 +307,17 @@ document.querySelectorAll('input[name="emode"]').forEach(r=>r.addEventListener("
 emailBtn.addEventListener("click", async ()=>{
   const email=document.getElementById("email").value.trim(),pass=document.getElementById("password").value,ad=document.getElementById("name").value.trim();
   if(!email||!pass) return show("err",t("eFill"));
+  const wantsTher = currentEmode()==="register" && document.getElementById("therChk").checked;
   emailBtn.disabled=true; show("ok",t("working"));
-  try{ if(currentEmode()==="register") await registerWithEmail(email,pass,ad,{talebRol:document.getElementById("therChk").checked?"terapevt":null}); else await loginWithEmail(email,pass); clearMsg(); }
+  try{
+    if(currentEmode()==="register") await registerWithEmail(email,pass,ad,{talebRol:wantsTher?"terapevt":null});
+    else await loginWithEmail(email,pass);
+    if(wantsTher){
+      const waMsg=encodeURIComponent(`Salam, mən ${ad||email}. Erkən Müdaxilə platformasında terapevt statusu tələb etdim, təsdiqləyə bilərsinizmi?`);
+      msgEl.innerHTML = `✅ Qeydiyyat uğurlu. Terapevt statusu admin təsdiqini gözləyir. <a href="https://wa.me/994552107111?text=${waMsg}" target="_blank" rel="noopener noreferrer" style="color:inherit;text-decoration:underline;font-weight:700">Aktivləşdirməni sürətləndirmək üçün WhatsApp yaz</a>`;
+      msgEl.className="msg show ok";
+    } else { clearMsg(); }
+  }
   catch(e){ show("err", e?.message||t("eGeneric")); } finally{ emailBtn.disabled=false; }
 });
 
