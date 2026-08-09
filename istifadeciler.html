@@ -187,6 +187,7 @@ function render(){
         </select>
         <button class="savebtn" data-save="${esc(u.uid)}">${esc(t("save"))}</button>
         <button class="savebtn" data-del="${esc(u.uid)}" style="background:var(--danger);">${esc(t("del"))}</button>
+        ${pending&&u.telefon?`<a class="savebtn" style="background:#25D366;color:#fff;text-decoration:none;display:inline-flex;align-items:center;justify-content:center" href="https://wa.me/${u.telefon.replace('+','')}?text=${encodeURIComponent('Salam '+(u.ad||'')+', Erkən Müdaxilə platformasında terapevt hesabınız aktivləşdirildi.')}" target="_blank" rel="noopener noreferrer">WhatsApp</a>`:""}
         <span class="rowmsg" data-msg="${esc(u.uid)}"></span>
       </div>`;
     wrap.appendChild(el);
