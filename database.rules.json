@@ -49,8 +49,27 @@
     },
     "registrations": {
       "$tool": {
-        ".read": "auth != null",
-        ".write": "auth != null"
+        ".read": "auth != null && ((auth.token.email === 'samir.akhundoff@gmail.com' && auth.token.email_verified === true) || root.child('users').child(auth.uid).child('rol').val() === 'admin')",
+        "$key": {
+          ".read": "auth != null && (data.child('devices').child(auth.uid).exists() || ((auth.token.email === 'samir.akhundoff@gmail.com' && auth.token.email_verified === true) || root.child('users').child(auth.uid).child('rol').val() === 'admin'))",
+          ".write": "auth != null && (!data.exists() || ((auth.token.email === 'samir.akhundoff@gmail.com' && auth.token.email_verified === true) || root.child('users').child(auth.uid).child('rol').val() === 'admin'))",
+          ".validate": "$key.matches(/^994[0-9]{9}$/) && newData.child('phone').val() === '+' + $key && newData.child('pin').isString() && newData.child('pin').val().length >= 4 && newData.child('pin').val().length <= 12",
+          "approved": {
+            ".validate": "newData.isBoolean() && (newData.val() === false || ((auth.token.email === 'samir.akhundoff@gmail.com' && auth.token.email_verified === true) || root.child('users').child(auth.uid).child('rol').val() === 'admin'))"
+          },
+          "adSoyad": {
+            ".validate": "newData.isString() && newData.val().length <= 80"
+          },
+          "isYeri": {
+            ".validate": "newData.isString() && newData.val().length <= 120"
+          },
+          "devices": {
+            "$dev": {
+              ".write": "auth != null && $dev === auth.uid",
+              ".validate": "newData.child('pin').val() === newData.parent().parent().child('pin').val() && newData.child('ts').isNumber()"
+            }
+          }
+        }
       }
     },
     "sirniyyat": {
