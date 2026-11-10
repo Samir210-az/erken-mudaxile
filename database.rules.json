@@ -253,6 +253,14 @@
         ".read": "auth != null",
         ".write": "auth != null && ((root.child('klinika_auth/devices').child(auth.uid).exists() && ((root.child('klinika_auth/devices').child(auth.uid).child('sid').val() === 'admin_master' && root.child('klinika_auth/devices').child(auth.uid).child('app').val() === 'klinika' && root.child('klinika_auth/devices').child(auth.uid).child('pin').val() === root.child('klinika_auth/master_klinika').val()) || (root.child('klinika_auth/devices').child(auth.uid).child('sid').val() === 'admin_master' && root.child('klinika_auth/devices').child(auth.uid).child('app').val() === 'terapiya' && root.child('klinika_auth/devices').child(auth.uid).child('pin').val() === root.child('klinika_auth/master_terapiya').val()) || (root.child('klinika_auth/devices').child(auth.uid).child('sid').val() !== 'admin_master' && root.child('klinika_auth/devices').child(auth.uid).child('pin').val() === root.child('klinika/staff').child(root.child('klinika_auth/devices').child(auth.uid).child('sid').val()).child('pin').val() && (root.child('klinika_auth/devices').child(auth.uid).child('app').val() === 'terapiya' || root.child('klinika/staff').child(root.child('klinika_auth/devices').child(auth.uid).child('sid').val()).child('klinikaAccess').val() === true)))) || ((auth.token.email === 'samir.akhundoff@gmail.com' && auth.token.email_verified === true) || root.child('users').child(auth.uid).child('rol').val() === 'admin'))"
       }
+    },
+    "ai_test_licenses": {
+      ".read": "auth != null && ((auth.token.email === 'samir.akhundoff@gmail.com' && auth.token.email_verified === true) || root.child('users').child(auth.uid).child('rol').val() === 'admin')",
+      "$h": {
+        ".read": true,
+        ".write": "!data.exists()",
+        ".validate": "$h.matches(/^[a-f0-9]{64}$/) && newData.hasChildren(['phone','ts']) && newData.child('phone').isString() && newData.child('phone').val().length <= 20 && newData.child('ts').isNumber()"
+      }
     }
   }
 }
