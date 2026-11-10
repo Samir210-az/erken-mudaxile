@@ -368,7 +368,7 @@ onUser(async (user, rol)=>{
   currentUid=user.uid; isAdmin=(rol==="admin");
   document.getElementById("logoutBtn").classList.remove("hidden");
   try{ const ts=await get(ref(db,"users/"+user.uid+"/tier")); currentTier=ts.exists()?ts.val():"pulsuz"; }catch{ currentTier="pulsuz"; }
-  const staff=(rol==="admin"||rol==="terapevt");
+  const staff=(rol==="admin");
   try{ children = staff ? await listAllChildren() : await listMyChildren(user.uid); }catch{ children=[]; }
   const wantChild=getParam("child");
   let pre = wantChild ? (children.find(c=>c.id===wantChild)||null) : null;

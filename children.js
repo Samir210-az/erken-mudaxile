@@ -3,7 +3,7 @@
 // Məxfilik: valideyn razılığı (consent) OLMADAN kart yaradılmır.
 
 import { db, auth } from "./firebase-init.js";
-import { ref, push, get, update, set } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-database.js";
+import { ref, push, get, update, set, query, orderByChild, equalTo } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-database.js";
 
 // Sabit domen siyahısı (Təlimat 3) — açarlar ASCII, etiketlər ayrıca map.
 export const SABIT_DOMENLER = [
@@ -80,6 +80,24 @@ export async function assignTherapist(childId, therapistUid) {
   const updates = {};
   updates[`children/${childId}/therapistIds/${therapistUid}`] = true;
   updates[`userChildren/${therapistUid}/${childId}`] = true;
+  await update(ref(db), updates);
+}
+
+export async function unassignTherapist(childId, therapistUid) {
+  const updates = {};
+  updates[`children/${childId}/therapistIds/${therapistUid}`] = null;
+  updates[`userChildren/${therapistUid}/${childId}`] = null;
+  await update(ref(db), updates);
+}
+
+// Uşağı, onun icazə indekslərini və seans qeydlərini birlikdə silir (yalnız admin).
+export async function deleteChild(child) {
+  const id = child.id;
+  const updates = { [`children/${id}`]: null };
+  Object.keys(child.parentIds || {}).forEach(u => { updates[`userChildren/${u}/${id}`] = null; });
+  Object.keys(child.therapistIds || {}).forEach(u => { updates[`userChildren/${u}/${id}`] = null; });
+  const seanslar = await get(query(ref(db, "seanslar"), orderByChild("childId"), equalTo(id)));
+  if (seanslar.exists()) Object.keys(seanslar.val()).forEach(k => { updates[`seanslar/${k}`] = null; });
   await update(ref(db), updates);
 }
 

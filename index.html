@@ -45,6 +45,15 @@
   .btn:active{transform:scale(.985);}
   .btn:disabled{opacity:.55;cursor:default;}
   .btn.secondary{background:var(--card);color:var(--accent);border:1.5px solid var(--line);}
+  .btn.google{display:flex;align-items:center;justify-content:center;gap:10px;background:#fff;color:#1f1f1f;border:1.5px solid var(--line);margin:0 0 6px;}
+  .or{display:flex;align-items:center;gap:10px;color:var(--muted);font-size:12px;font-weight:700;margin:12px 0 14px;}
+  .or::before,.or::after{content:"";flex:1;height:1px;background:var(--line);}
+  .linkbtn{background:none;border:0;padding:4px 2px;margin:-4px 0 10px;font:inherit;font-size:13px;font-weight:700;color:var(--brand-dark);text-decoration:underline;cursor:pointer;}
+  .ther-row{display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:14px;padding:7px 0;}
+  .ther-row button{background:none;border:0;color:var(--danger);font-size:18px;cursor:pointer;padding:0 6px;}
+  .ther-add{display:flex;gap:8px;margin-top:8px;}
+  .ther-add select{flex:1;font:inherit;font-size:14px;border:1.5px solid var(--line);border-radius:12px;padding:10px;background:var(--card);color:var(--ink);}
+  .ther-add .btn{width:auto;padding:10px 16px;font-size:14px;margin:0;}
   .msg{margin:14px 2px 0;font-size:14px;font-weight:700;border-radius:12px;padding:11px 13px;display:none;}
   .msg.show{display:block;animation:rise .25s ease both;}
   .msg.err{background:var(--danger-soft);color:var(--danger);}
@@ -130,6 +139,8 @@
   </div>
 
   <div class="card" id="authCard">
+    <button class="btn google" id="googleBtn" type="button"><svg width="20" height="20" viewBox="0 0 48 48" aria-hidden="true"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.7 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.4-.4-3.5z"/><path fill="#FF3D00" d="m6.3 14.7 6.6 4.8C14.7 15.1 19 12 24 12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.1 26.7 36 24 36c-5.2 0-9.6-3.3-11.3-7.9l-6.5 5C9.5 39.6 16.2 44 24 44z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.2-2.2 4.2-4.1 5.6l6.2 5.2C37 39.2 44 34 44 24c0-1.3-.1-2.4-.4-3.5z"/></svg><span data-i18n="google">Google ilə daxil ol</span></button>
+    <div class="or" data-i18n="or">və ya</div>
     <div class="tabs" role="tablist">
       <button id="tabEmail" role="tab" aria-selected="true" data-i18n="tabEmail">E-poçt</button>
       <button id="tabPhone" role="tab" aria-selected="false" data-i18n="tabPhone">Telefon</button>
@@ -143,10 +154,11 @@
       <label class="check hidden" id="therField"><input type="checkbox" id="therChk"><span data-i18n="therReg">Mütəxəssis (terapevt) kimi qeydiyyat — admin təsdiqləyir</span></label>
       <label class="field"><span data-i18n="email">E-poçt</span><input type="email" id="email" inputmode="email" autocomplete="email" autocapitalize="off" /></label>
       <label class="field"><span data-i18n="password">Parol</span><input type="password" id="password" autocomplete="current-password" /></label>
+      <button class="linkbtn" id="forgotBtn" type="button" data-i18n="forgot">Parolu unutmusunuz?</button>
       <button class="btn" id="emailSubmit" data-i18n="login">Giriş</button>
     </div>
     <div id="panelPhone" class="hidden">
-      <label class="field"><span data-i18n="phone">Telefon nömrəsi</span><input type="tel" id="phone" inputmode="tel" placeholder="+994 50 123 45 67" autocomplete="tel" /></label>
+      <label class="field"><span data-i18n="phone">Telefon nömrəsi</span><input type="tel" id="phone" inputmode="tel" placeholder="050 123 45 67" autocomplete="tel" /></label>
       <button class="btn" id="sendCode" data-i18n="sendCode">Kod göndər</button>
       <div id="codeStep" class="hidden">
         <label class="field" style="margin-top:13px;"><span data-i18n="smsCode">SMS kodu</span><input type="text" id="smsCode" inputmode="numeric" autocomplete="one-time-code" /></label>
@@ -223,6 +235,12 @@
       <div id="dHist"></div>
       <div class="empty" id="dHistEmpty" data-i18n="noScreening">Hələ skrininq yoxdur.</div>
     </div>
+    <div class="hist hidden" id="dTherBox">
+      <h4 data-i18n="therTitle">Təyin olunmuş terapevtlər</h4>
+      <div id="dTherList"></div>
+      <div class="empty" id="dTherEmpty" data-i18n="therNone">Terapevt təyin olunmayıb.</div>
+      <div class="ther-add"><select id="dTherSel" aria-label="Terapevt"></select><button class="btn" id="dTherAdd" type="button" data-i18n="therAssign">Təyin et</button></div>
+    </div>
     <div class="modal-actions" style="margin-top:14px;">
       <button class="btn secondary" id="dClose" data-i18n="close">Bağla</button>
       <button class="btn" id="dScreen" data-i18n="startScreening">Skrininq et</button>
@@ -233,8 +251,8 @@
 </div>
 
 <script type="module">
-import { registerWithEmail, loginWithEmail, setupRecaptcha, sendPhoneCode, confirmPhoneCode, logout, onUser } from "./auth.js";
-import { createChild, listMyChildren, listAllChildren } from "./children.js";
+import { registerWithEmail, loginWithEmail, loginWithGoogle, resetPassword, normalizePhone, setupRecaptcha, sendPhoneCode, confirmPhoneCode, logout, onUser } from "./auth.js";
+import { createChild, listMyChildren, listAllChildren, assignTherapist, unassignTherapist, deleteChild } from "./children.js";
 import { db } from "./firebase-init.js";
 import { ref, get, update } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-database.js";
 
@@ -258,7 +276,17 @@ const I18N = {
     needConsent:"Davam etmək üçün razılıq verin.", needName:"Uşağın adını yazın.", creating:"Yaradılır…",
     eFill:"E-poçt və parolu doldurun.", ePhone:"Düzgün nömrə daxil edin (+994…).", eCode:"Kodu daxil edin.",
     working:"Gözləyin…", codeSent:"Kod göndərildi.", eGeneric:"Xəta baş verdi. Yenidən cəhd edin.",
-    lowR:"Aşağı risk", medR:"Orta risk", highR:"Yüksək risk", boyV:"Oğlan", girlV:"Qız" },
+    lowR:"Aşağı risk", medR:"Orta risk", highR:"Yüksək risk", boyV:"Oğlan", girlV:"Qız",
+    google:"Google ilə daxil ol", or:"və ya", forgot:"Parolu unutmusunuz?", eNeedEmail:"Əvvəlcə e-poçtunuzu yazın.", resetSent:"Parol bərpası linki e-poçtunuza göndərildi. Spam qovluğunu da yoxlayın.",
+    therTitle:"Təyin olunmuş terapevtlər", therNone:"Terapevt təyin olunmayıb.", therAssign:"Təyin et", therPick:"Terapevt seçin", therNoList:"Sistemdə terapevt yoxdur",
+    "auth/invalid-credential":"E-poçt və ya parol yanlışdır.", "auth/wrong-password":"E-poçt və ya parol yanlışdır.", "auth/user-not-found":"Bu e-poçtla hesab tapılmadı. «Qeydiyyat» seçin.",
+    "auth/email-already-in-use":"Bu e-poçtla hesab artıq var. «Giriş» seçin və ya «Parolu unutmusunuz?» ilə yeni parol təyin edin.",
+    "auth/invalid-email":"E-poçt ünvanı düzgün deyil.", "auth/weak-password":"Parol ən azı 6 simvol olmalıdır.", "auth/missing-password":"Parolu yazın.",
+    "auth/too-many-requests":"Çox cəhd edildi. Bir az sonra yenidən yoxlayın.", "auth/error-code:-39":"Bu nömrəyə qısa müddətdə çox kod istənib. Bir neçə saat sonra yenidən cəhd edin və ya Google/e-poçt ilə daxil olun.",
+    "auth/invalid-verification-code":"SMS kodu yanlışdır.", "auth/code-expired":"Kodun vaxtı bitib. Yeni kod istəyin.", "auth/invalid-phone-number":"Telefon nömrəsi düzgün deyil.",
+    "auth/network-request-failed":"İnternet bağlantısını yoxlayın.", "auth/popup-blocked":"Brauzer Google pəncərəsini blokladı. Pop-up icazəsi verib yenidən cəhd edin.",
+    "auth/account-exists-with-different-credential":"Bu e-poçt başqa üsulla qeydiyyatdan keçib. O üsulla daxil olun.", "auth/captcha-check-failed":"Təhlükəsizlik yoxlaması alınmadı. Səhifəni yeniləyib yenidən cəhd edin.",
+    "permission-denied":"Bu əməliyyata icazəniz yoxdur." },
   ru:{ heroTitle:"Раннее вмешательство имеет значение", heroSub:"Платформа поддержки для детей с особыми потребностями.",
     tabEmail:"Эл. почта", tabPhone:"Телефон", login:"Вход", register:"Регистрация",
     name:"Имя, Фамилия", email:"Эл. почта", password:"Пароль", phone:"Номер телефона", sendCode:"Отправить код", smsCode:"SMS-код", confirm:"Подтвердить",
@@ -278,7 +306,17 @@ const I18N = {
     needConsent:"Дайте согласие, чтобы продолжить.", needName:"Введите имя ребёнка.", creating:"Создаётся…",
     eFill:"Заполните почту и пароль.", ePhone:"Введите корректный номер (+994…).", eCode:"Введите код.",
     working:"Подождите…", codeSent:"Код отправлен.", eGeneric:"Произошла ошибка. Попробуйте снова.",
-    lowR:"Низкий риск", medR:"Средний риск", highR:"Высокий риск", boyV:"Мальчик", girlV:"Девочка" }
+    lowR:"Низкий риск", medR:"Средний риск", highR:"Высокий риск", boyV:"Мальчик", girlV:"Девочка",
+    google:"Войти через Google", or:"или", forgot:"Забыли пароль?", eNeedEmail:"Сначала введите эл. почту.", resetSent:"Ссылка для восстановления пароля отправлена на почту. Проверьте и папку «Спам».",
+    therTitle:"Назначенные терапевты", therNone:"Терапевт не назначен.", therAssign:"Назначить", therPick:"Выберите терапевта", therNoList:"В системе нет терапевтов",
+    "auth/invalid-credential":"Неверная почта или пароль.", "auth/wrong-password":"Неверная почта или пароль.", "auth/user-not-found":"Аккаунт с этой почтой не найден. Выберите «Регистрация».",
+    "auth/email-already-in-use":"Аккаунт с этой почтой уже есть. Выберите «Вход» или восстановите пароль.",
+    "auth/invalid-email":"Некорректный адрес почты.", "auth/weak-password":"Пароль должен быть не короче 6 символов.", "auth/missing-password":"Введите пароль.",
+    "auth/too-many-requests":"Слишком много попыток. Попробуйте позже.", "auth/error-code:-39":"На этот номер запрошено слишком много кодов. Попробуйте через несколько часов или войдите через Google/почту.",
+    "auth/invalid-verification-code":"Неверный SMS-код.", "auth/code-expired":"Срок кода истёк. Запросите новый.", "auth/invalid-phone-number":"Некорректный номер телефона.",
+    "auth/network-request-failed":"Проверьте подключение к интернету.", "auth/popup-blocked":"Браузер заблокировал окно Google. Разрешите всплывающие окна и повторите.",
+    "auth/account-exists-with-different-credential":"Эта почта зарегистрирована другим способом. Войдите им.", "auth/captcha-check-failed":"Проверка безопасности не пройдена. Обновите страницу и повторите.",
+    "permission-denied":"Нет прав на это действие." }
 };
 let lang="az";
 const t=k=>(I18N[lang][k]??k);
@@ -295,6 +333,25 @@ document.querySelectorAll(".lang button").forEach(b=>b.addEventListener("click",
 const msgEl=document.getElementById("msg");
 function show(k,x){msgEl.className="msg show "+k;msgEl.textContent=x;}
 function clearMsg(){msgEl.className="msg";msgEl.textContent="";}
+function errText(e){
+  const code=(e&&e.code)||"";
+  if(code && I18N[lang][code]) return I18N[lang][code];
+  if(/permission[_-]denied/i.test(code+" "+(e&&e.message||""))) return t("permission-denied");
+  console.error(e); return t("eGeneric");
+}
+document.getElementById("googleBtn").addEventListener("click", async ()=>{
+  const b=document.getElementById("googleBtn"); b.disabled=true; show("ok",t("working"));
+  try{ await loginWithGoogle(); clearMsg(); }
+  catch(e){ if(e?.code==="auth/popup-closed-by-user"||e?.code==="auth/cancelled-popup-request") clearMsg(); else show("err",errText(e)); }
+  finally{ b.disabled=false; }
+});
+document.getElementById("forgotBtn").addEventListener("click", async ()=>{
+  const email=document.getElementById("email").value.trim();
+  if(!email) return show("err",t("eNeedEmail"));
+  show("ok",t("working"));
+  try{ await resetPassword(email); show("ok",t("resetSent")); }
+  catch(e){ if(e?.code==="auth/user-not-found") show("ok",t("resetSent")); else show("err",errText(e)); }
+});
 
 const tabEmail=document.getElementById("tabEmail"),tabPhone=document.getElementById("tabPhone"),panelEmail=document.getElementById("panelEmail"),panelPhone=document.getElementById("panelPhone");
 function selectTab(w){const e=w==="email";tabEmail.setAttribute("aria-selected",String(e));tabPhone.setAttribute("aria-selected",String(!e));panelEmail.classList.toggle("hidden",!e);panelPhone.classList.toggle("hidden",e);clearMsg();}
@@ -302,7 +359,7 @@ tabEmail.onclick=()=>selectTab("email");tabPhone.onclick=()=>selectTab("phone");
 
 const nameField=document.getElementById("nameField"),emailBtn=document.getElementById("emailSubmit");
 function currentEmode(){return document.querySelector('input[name="emode"]:checked').value;}
-function syncEmailButton(){const reg=currentEmode()==="register";nameField.classList.toggle("hidden",!reg);document.getElementById("therField").classList.toggle("hidden",!reg);emailBtn.textContent=reg?t("register"):t("login");document.getElementById("password").setAttribute("autocomplete",reg?"new-password":"current-password");}
+function syncEmailButton(){const reg=currentEmode()==="register";document.getElementById("forgotBtn").classList.toggle("hidden",reg);nameField.classList.toggle("hidden",!reg);document.getElementById("therField").classList.toggle("hidden",!reg);emailBtn.textContent=reg?t("register"):t("login");document.getElementById("password").setAttribute("autocomplete",reg?"new-password":"current-password");}
 document.querySelectorAll('input[name="emode"]').forEach(r=>r.addEventListener("change",()=>{clearMsg();syncEmailButton();}));
 
 emailBtn.addEventListener("click", async ()=>{
@@ -319,23 +376,23 @@ emailBtn.addEventListener("click", async ()=>{
       msgEl.className="msg show ok";
     } else { clearMsg(); }
   }
-  catch(e){ show("err", e?.message||t("eGeneric")); } finally{ emailBtn.disabled=false; }
+  catch(e){ show("err", errText(e)); } finally{ emailBtn.disabled=false; }
 });
 
 let verifier=null,confirmation=null;
 const sendBtn=document.getElementById("sendCode"),codeStep=document.getElementById("codeStep"),confirmBtn=document.getElementById("confirmCode");
 sendBtn.addEventListener("click", async ()=>{
-  const phone=document.getElementById("phone").value.replace(/\s+/g,"");
-  if(!/^\+\d{9,15}$/.test(phone)) return show("err",t("ePhone"));
+  const phone=normalizePhone(document.getElementById("phone").value);
+  if(!phone) return show("err",t("ePhone"));
   sendBtn.disabled=true; show("ok",t("working"));
-  try{ if(!verifier) verifier=setupRecaptcha("recaptcha-container"); confirmation=await sendPhoneCode(phone,verifier); codeStep.classList.remove("hidden"); show("ok",t("codeSent")); }
-  catch(e){ show("err", e?.message||t("eGeneric")); } finally{ sendBtn.disabled=false; }
+  try{ if(!verifier) verifier=setupRecaptcha("recaptcha-container"); confirmation=await sendPhoneCode(phone,verifier); codeStep.classList.remove("hidden"); show("ok",t("codeSent")); document.getElementById("smsCode").focus(); }
+  catch(e){ show("err", errText(e)); try{ verifier&&verifier.clear(); }catch{} verifier=null; document.getElementById("recaptcha-container").innerHTML=""; } finally{ sendBtn.disabled=false; }
 });
 confirmBtn.addEventListener("click", async ()=>{
   const code=document.getElementById("smsCode").value.trim();
   if(!code) return show("err",t("eCode"));
   confirmBtn.disabled=true; show("ok",t("working"));
-  try{ await confirmPhoneCode(confirmation,code); clearMsg(); } catch(e){ show("err", e?.message||t("eGeneric")); } finally{ confirmBtn.disabled=false; }
+  try{ await confirmPhoneCode(confirmation,code); clearMsg(); } catch(e){ show("err", errText(e)); } finally{ confirmBtn.disabled=false; }
 });
 
 const authCard=document.getElementById("authCard"),loggedCard=document.getElementById("loggedCard");
@@ -366,9 +423,9 @@ function renderChildren(list){
   });
 }
 async function loadChildren(){
-  const staff=(currentRol==="admin"||currentRol==="terapevt");
-  const tt=document.getElementById("childTitle"); if(tt) tt.textContent = staff?t("allChildren"):t("myChildren");
-  try{ renderChildren(await (staff?listAllChildren():listMyChildren(currentUid))); }catch(e){ console.error(e); }
+  const isAdmin=currentRol==="admin";
+  const tt=document.getElementById("childTitle"); if(tt) tt.textContent = isAdmin?t("allChildren"):t("myChildren");
+  try{ renderChildren(await (isAdmin?listAllChildren():listMyChildren(currentUid))); }catch(e){ console.error(e); }
 }
 
 const detailModal=document.getElementById("detailModal");
@@ -395,8 +452,38 @@ function openDetail(c){
     });
   }
   document.getElementById("dDelete").classList.toggle("hidden", currentRol!=="admin");
+  document.getElementById("dTherBox").classList.toggle("hidden", currentRol!=="admin");
+  if(currentRol==="admin") renderTherapists();
   detailModal.classList.remove("hidden");
 }
+let therapistsCache=null;
+async function loadTherapists(){
+  if(therapistsCache) return therapistsCache;
+  const snap=await get(ref(db,"users")); const v=snap.exists()?snap.val():{};
+  therapistsCache=Object.keys(v).filter(k=>v[k]&&v[k].rol==="terapevt").map(k=>({uid:k,ad:v[k].ad||v[k].email||v[k].telefon||k}));
+  return therapistsCache;
+}
+async function renderTherapists(){
+  const list=document.getElementById("dTherList"),empty=document.getElementById("dTherEmpty"),sel=document.getElementById("dTherSel");
+  list.innerHTML=""; sel.innerHTML="";
+  let all=[]; try{ all=await loadTherapists(); }catch(e){ console.error(e); }
+  const assigned=Object.keys(detailChild?.therapistIds||{});
+  empty.classList.toggle("hidden", assigned.length>0);
+  assigned.forEach(uid=>{
+    const row=document.createElement("div"); row.className="ther-row";
+    const nm=document.createElement("span"); nm.textContent=(all.find(x=>x.uid===uid)||{}).ad||uid;
+    const rm=document.createElement("button"); rm.type="button"; rm.textContent="×"; rm.setAttribute("aria-label",t("cancel"));
+    rm.onclick=async()=>{ try{ await unassignTherapist(detailChild.id,uid); delete detailChild.therapistIds[uid]; renderTherapists(); }catch(e){ alert(errText(e)); } };
+    row.appendChild(nm); row.appendChild(rm); list.appendChild(row);
+  });
+  const free=all.filter(x=>!assigned.includes(x.uid));
+  const ph=document.createElement("option"); ph.value=""; ph.textContent=free.length?t("therPick"):t("therNoList"); sel.appendChild(ph);
+  free.forEach(x=>{ const o=document.createElement("option"); o.value=x.uid; o.textContent=x.ad; sel.appendChild(o); });
+}
+document.getElementById("dTherAdd").onclick=async()=>{
+  const uid=document.getElementById("dTherSel").value; if(!uid||!detailChild) return;
+  try{ await assignTherapist(detailChild.id,uid); detailChild.therapistIds={...(detailChild.therapistIds||{}),[uid]:true}; renderTherapists(); }catch(e){ alert(errText(e)); }
+};
 function closeDetail(){ detailModal.classList.add("hidden"); }
 document.getElementById("dClose").onclick=closeDetail;
 detailModal.addEventListener("click",e=>{ if(e.target===detailModal) closeDetail(); });
@@ -405,10 +492,8 @@ document.getElementById("dScreenV2").onclick=()=>{ if(detailChild) location.href
 document.getElementById("dDelete").onclick=async()=>{
   if(!detailChild || currentRol!=="admin") return;
   if(!confirm(t("confirmDeleteChild"))) return;
-  const id=detailChild.id;
   try{
-    await update(ref(db),{["children/"+id]:null});
-    try{ const pids=detailChild.parentIds?Object.keys(detailChild.parentIds):[]; const upd={}; pids.forEach(pu=>upd["userChildren/"+pu+"/"+id]=null); if(Object.keys(upd).length) await update(ref(db),upd); }catch{}
+    await deleteChild(detailChild);
     closeDetail(); loadChildren();
   }catch(e){ alert(t("delErr")+" "+(e&&e.message?e.message:"")); }
 };
@@ -427,7 +512,7 @@ cSave.addEventListener("click", async ()=>{
   try{
     await createChild({ profil:{ ad:cName.value.trim(), dogumTarixi:cBirth.value||"", cins:cGender.value||"" }, raziliq:{ verildi:true, tarix:Date.now() }, valideynUid:currentUid });
     closeModal(); await loadChildren();
-  }catch(e){ modalMsg.className="msg show err"; modalMsg.textContent=e?.message||t("eGeneric"); }
+  }catch(e){ modalMsg.className="msg show err"; modalMsg.textContent=e?.code?errText(e):(e?.message||t("eGeneric")); }
   finally{ cSave.disabled=false; }
 });
 
@@ -468,6 +553,7 @@ premiumBtnEl.addEventListener("click", async ()=>{
     await update(ref(db),{
       ["premiumKodlar/"+kod+"/istifadeBy"]: currentUid,
       ["premiumKodlar/"+kod+"/istifadeTarixi"]: Date.now(),
+      ["users/"+currentUid+"/premiumKod"]: kod,
       ["users/"+currentUid+"/tier"]: "premium"
     });
     premMsg("ok",t("premiumOk")); premiumKodEl.value="";
