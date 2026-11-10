@@ -55,8 +55,21 @@
       }
     },
     "menyu_analytics": {
-      ".read": "auth != null",
-      ".write": "auth != null"
+      ".read": "auth != null && auth.token.email === 'samir.akhundoff@gmail.com' && auth.token.email_verified === true",
+      "events": {
+        "$id": {
+          ".write": "(auth != null && !data.exists() && newData.exists()) || (auth != null && auth.token.email === 'samir.akhundoff@gmail.com' && auth.token.email_verified === true)",
+          ".validate": "newData.hasChildren(['type','ts']) && newData.child('type').isString() && newData.child('type').val().length <= 40 && newData.child('ts').isNumber()"
+        }
+      },
+      "ip_labels": {
+        ".write": "auth != null && auth.token.email === 'samir.akhundoff@gmail.com' && auth.token.email_verified === true"
+      },
+      "skrininq_sessions": {
+        "$id": {
+          ".write": "auth != null"
+        }
+      }
     },
     "an_site": {
       "news": {
