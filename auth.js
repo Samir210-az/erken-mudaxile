@@ -10,7 +10,10 @@ import {
   signOut,
   onAuthStateChanged,
   RecaptchaVerifier,
-  signInWithPhoneNumber
+  signInWithPhoneNumber,
+  GoogleAuthProvider,
+  signInWithPopup,
+  sendPasswordResetEmail
 } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
 import { ref, get, set } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-database.js";
 
@@ -44,6 +47,30 @@ export async function loginWithEmail(email, password) {
   const cred = await signInWithEmailAndPassword(auth, email, password);
   await ensureUserRecord(cred.user);
   return cred.user;
+}
+
+export async function loginWithGoogle() {
+  const provider = new GoogleAuthProvider();
+  provider.setCustomParameters({ prompt: "select_account" });
+  const cred = await signInWithPopup(auth, provider);
+  await ensureUserRecord(cred.user);
+  return cred.user;
+}
+
+export async function resetPassword(email) {
+  auth.languageCode = document.documentElement.lang || "az";
+  await sendPasswordResetEmail(auth, email);
+}
+
+// Azərbaycan nömrəsini E.164 formatına salır: 0552107111, 552107111, +994 55 210 71 11 → +994552107111
+export function normalizePhone(raw) {
+  let d = String(raw || "").replace(/[^\d+]/g, "");
+  if (d.startsWith("+")) return /^\+\d{9,15}$/.test(d) ? d : null;
+  if (d.startsWith("00")) d = d.slice(2);
+  else if (d.startsWith("994")) { /* ölkə kodu ilə yazılıb */ }
+  else if (d.startsWith("0") && d.length === 10) d = "994" + d.slice(1);
+  else if (d.length === 9) d = "994" + d;
+  return /^\d{9,15}$/.test(d) ? "+" + d : null;
 }
 
 // ── Telefon (SMS) ─────────────────────────────────────────────────

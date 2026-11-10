@@ -520,7 +520,7 @@ onUser(async (user, rol)=>{
   try{ const ts=await get(ref(db,"users/"+user.uid+"/tier")); if(ts.exists()) tier=ts.val(); }catch{}
   canDetail = (tier==="premium" || rol==="admin" || rol==="terapevt" || user.email==="samir.akhundoff@gmail.com");
   if(!canDetail){ show("premiumGate"); return; }
-  const staff=(rol==="admin"||rol==="terapevt");
+  const staff=(rol==="admin");
   try{ children = staff ? await listAllChildren() : await listMyChildren(user.uid); }catch{ children=[]; }
   const wantChild=getParam("child");
   let pre = wantChild ? (children.find(c=>c.id===wantChild)||null) : null;
