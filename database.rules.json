@@ -30,8 +30,23 @@
       ".write": "auth != null"
     },
     "saas_users": {
-      ".read": "auth != null",
-      ".write": "auth != null"
+      ".read": "auth != null && ((auth.token.email === 'samir.akhundoff@gmail.com' && auth.token.email_verified === true) || root.child('users').child(auth.uid).child('rol').val() === 'admin')",
+      "$un": {
+        ".read": "auth != null && (data.child('devices').child(auth.uid).exists() || ((auth.token.email === 'samir.akhundoff@gmail.com' && auth.token.email_verified === true) || root.child('users').child(auth.uid).child('rol').val() === 'admin'))",
+        ".write": "auth != null && (!data.exists() || ((auth.token.email === 'samir.akhundoff@gmail.com' && auth.token.email_verified === true) || root.child('users').child(auth.uid).child('rol').val() === 'admin'))",
+        "status": {
+          ".validate": "newData.val() === 'pending' || ((auth.token.email === 'samir.akhundoff@gmail.com' && auth.token.email_verified === true) || root.child('users').child(auth.uid).child('rol').val() === 'admin')"
+        },
+        "pw": {
+          ".validate": "newData.isString() && newData.val().length >= 4 && newData.val().length <= 64"
+        },
+        "devices": {
+          "$dev": {
+            ".write": "auth != null && $dev === auth.uid",
+            ".validate": "newData.child('pw').val() === newData.parent().parent().child('pw').val() && newData.child('ts').isNumber()"
+          }
+        }
+      }
     },
     "aba_terapiya": {
       "registrations": {
@@ -44,8 +59,25 @@
       ".write": "auth != null"
     },
     "an_site": {
-      ".read": "auth != null",
-      ".write": "auth != null"
+      "news": {
+        ".read": true,
+        ".write": "auth != null && ((auth.token.email === 'samir.akhundoff@gmail.com' && auth.token.email_verified === true) || root.child('users').child(auth.uid).child('rol').val() === 'admin')"
+      },
+      "team": {
+        ".read": true,
+        ".write": "auth != null && ((auth.token.email === 'samir.akhundoff@gmail.com' && auth.token.email_verified === true) || root.child('users').child(auth.uid).child('rol').val() === 'admin')"
+      },
+      "about": {
+        ".read": true,
+        ".write": "auth != null && ((auth.token.email === 'samir.akhundoff@gmail.com' && auth.token.email_verified === true) || root.child('users').child(auth.uid).child('rol').val() === 'admin')"
+      },
+      "reg": {
+        ".read": "auth != null && ((auth.token.email === 'samir.akhundoff@gmail.com' && auth.token.email_verified === true) || root.child('users').child(auth.uid).child('rol').val() === 'admin')",
+        "$rid": {
+          ".write": "auth != null && (!data.exists() || ((auth.token.email === 'samir.akhundoff@gmail.com' && auth.token.email_verified === true) || root.child('users').child(auth.uid).child('rol').val() === 'admin'))",
+          ".validate": "newData.hasChildren(['id','name','phone','program']) && newData.child('id').isNumber() && newData.child('name').isString() && newData.child('name').val().length <= 80 && newData.child('phone').isString() && newData.child('phone').val().matches(/^[0-9 +()-]{5,20}$/) && newData.child('program').isString() && newData.child('program').val().length <= 80 && (!newData.child('msg').exists() || (newData.child('msg').isString() && newData.child('msg').val().length <= 1000))"
+        }
+      }
     },
     "registrations": {
       "$tool": {
