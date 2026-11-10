@@ -2,7 +2,7 @@
   "name": "Erkən Müdaxilə",
   "short_name": "EM",
   "description": "Erkən Müdaxilə tətbiqi",
-  "start_url": "/erken-mudaxile/",
+  "start_url": "./",
   "display": "standalone",
   "background_color": "#0e5c49",
   "theme_color": "#0e5c49",
