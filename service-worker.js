@@ -1,4 +1,4 @@
-const CACHE_NAME = 'erken-mudaxile-v2';
+const CACHE_NAME = 'erken-mudaxile-v3';
 const urlsToCache = ['./', './index.html'];
 
 self.addEventListener('install', e => {
